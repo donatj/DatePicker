@@ -278,6 +278,6 @@ DatePicker.prototype = {
 
 if( typeof define == "function" ) {
 	define([], function() {
-		return TickerGraph;
+		return DatePicker;
 	});
 }
