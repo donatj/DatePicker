@@ -1,0 +1,62 @@
+.DatePicker {
+	background: white;
+	border: 1px solid rgba(0, 0, 0, .4);
+	display: inline-block;
+	position: absolute;
+	padding: 5px;
+	border-radius: 5px;
+	box-shadow: rgba(0, 0, 0, .1) 3px 3px 3px;
+	font-family: Arial, monospace;
+
+	.DatePicker-header {
+		text-align: center;
+	}
+
+	td {
+		border-radius: 4px;
+		color: black;
+		border: 1px solid rgba(0, 0, 0, .1);
+		padding: 3px;
+		margin: 1px;
+		font-size: .9em;
+
+		&.DatePicker-date {
+			border-color: transparent;
+			text-align: center;
+
+			&:hover {
+				background-color: orange;
+				border-color: darkorange;
+				cursor: pointer;
+			}
+
+			&.DatePicker-date-disabled {
+				background: transparent;
+				color: #aaa;
+				cursor: auto;
+
+				&:hover {
+					border-color: transparent;
+				}
+			}
+		}
+	}
+
+	.DatePicker-next-month {
+		float: right;
+	}
+
+	.DatePicker-prev-month {
+		float: left;
+	}
+
+	.DatePicker-next-month, .DatePicker-prev-month {
+		color: #bbb;
+		cursor: pointer;
+		font-size: 14px;
+
+		&:hover {
+			color: #000;
+		}
+	}
+}

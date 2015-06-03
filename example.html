@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset='utf-8'>
+	<link rel="stylesheet" href="css/DatePicker.css" type="text/css" media="screen,print" />
+</head>
+<body>
+<fieldset>
+	<legend>Date Pickers!</legend>
+
+	<h4>Output Formats</h4>
+
+	<label>Y-m-d<br />
+		<input type="text" class="date-picker" style="margin: 10px; font-size: 15px;" data-format="Y-m-d">
+	</label>
+
+	<br />
+
+	<label>F jS Y<br />
+		<input type="text" class="date-picker" style="margin: 10px; font-size: 20px;" data-format="F jS Y">
+	</label>
+
+	<br />
+	<label>d-y-m<br />
+		<input type="text" class="date-picker" style="margin: 10px;" data-format="d-y-m">
+	</label>
+
+</fieldset>
+<script src="src/datepicker.js"></script>
+<script>
+	var inputs = document.querySelectorAll('input.date-picker');
+
+	for( var i = 0; i <= inputs.length - 1; i++ ) {
+		new DatePicker(inputs[i], {
+			outputFormat: inputs[i].getAttribute('data-format')
+		});
+	}
+</script>
+</body>
+</html>
