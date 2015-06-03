@@ -1,0 +1,17 @@
+{
+	"name": "donatj/date-picker-js",
+	"type": "quorum-js",
+	"description": "Simple JavaScript DatePicker Graph using the Quorum JS Installer",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Jesse Donat",
+			"email": "donatj@gmail.com",
+			"homepage": "http://donatstudios.com",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"quorum/installer": "1.*"
+	}
+}
