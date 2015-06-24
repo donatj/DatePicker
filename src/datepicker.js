@@ -19,7 +19,8 @@ var DatePicker = function( picker, options ) {
 		prev        : '◀',
 		date        : new Date(),
 		minDate     : false,
-		maxDate     : false
+		maxDate     : false,
+		onPick      : function() { /*....*/ }
 	};
 
 	if( typeof options == "object" ) {
@@ -170,6 +171,7 @@ DatePicker.prototype = {
 				td.addEventListener('click', function( date ) {
 					return function() {
 						that.setPickerDate(date);
+						that.options.onPick.apply(that.picker);
 					}
 				}(dayDate));
 			} else {
