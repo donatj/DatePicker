@@ -11,16 +11,17 @@ var DatePicker = function( picker, options ) {
 	this.picker = picker;
 
 	this.options = {
-		outputFormat: 'Y-m-d',
-		days        : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-		months      : ["January", "February", "March", "April", "May", "June",
+		outputFormat      : 'Y-m-d',
+		days              : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+		months            : ["January", "February", "March", "April", "May", "June",
 			"July", "August", "September", "October", "November", "December"],
-		next        : '▶',
-		prev        : '◀',
-		date        : new Date(),
-		minDate     : false,
-		maxDate     : false,
-		onPick      : function() { /*....*/ }
+		next              : '▶',
+		prev              : '◀',
+		date              : new Date(),
+		minDate           : false,
+		maxDate           : false,
+		onPick            : function() { /*....*/ },
+		triggerChangeEvent: true
 	};
 
 	if( typeof options == "object" ) {
@@ -172,6 +173,13 @@ DatePicker.prototype = {
 					return function() {
 						that.setPickerDate(date);
 						that.options.onPick.apply(that.picker);
+						if( that.options.triggerChangeEvent ) {
+							if( that.picker.dispatchEvent ) { // IE9+
+								var evt = document.createEvent("HTMLEvents");
+								evt.initEvent('change', true, true);
+								return !that.picker.dispatchEvent(evt);
+							}
+						}
 					}
 				}(dayDate));
 			} else {
