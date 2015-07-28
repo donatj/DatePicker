@@ -39,8 +39,10 @@ var DatePicker = function( picker, options ) {
 	this.offset = 0;
 
 	this.display = function() {
-		that.calendar.style.top = (that.picker.offsetTop + that.picker.getBoundingClientRect().height) + "px";
-		that.calendar.style.left = that.picker.offsetLeft + "px";
+		var rect = that.picker.getBoundingClientRect();
+
+		that.calendar.style.top = rect.bottom + "px";
+		that.calendar.style.left = rect.left + "px";
 		that.calendar.style.display = 'inline-block';
 		this.calendar.style.visibility = 'inherit';
 	};
