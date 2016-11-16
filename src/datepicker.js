@@ -5,7 +5,7 @@
  * @param {Object} options
  * @constructor
  */
-var DatePicker = function( picker, options ) {
+var DatePicker = function( picker, options, x, y ) {
 	var that = this;
 
 	this.picker = picker;
@@ -21,7 +21,10 @@ var DatePicker = function( picker, options ) {
 		minDate           : false,
 		maxDate           : false,
 		onPick            : function() { /*....*/ },
-		triggerChangeEvent: true
+		triggerChangeEvent: true,
+		x                 : x || 0,
+		y                 : y || 0
+
 	};
 
 	if( typeof options == "object" ) {
@@ -41,8 +44,8 @@ var DatePicker = function( picker, options ) {
 	this.display = function() {
 		var rect = that.picker.getBoundingClientRect();
 
-		that.calendar.style.top = rect.bottom + "px";
-		that.calendar.style.left = rect.left + "px";
+		that.calendar.style.top = rect.bottom - that.options.x + "px";
+		that.calendar.style.left = rect.left - that.options.y + "px";
 		that.calendar.style.display = 'inline-block';
 		this.calendar.style.visibility = 'inherit';
 	};
