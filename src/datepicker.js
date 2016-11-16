@@ -41,12 +41,19 @@ var DatePicker = function( picker, options ) {
 	this.offset = 0;
 
 	this.display = function() {
-		var rect = that.picker.getBoundingClientRect();
+		var rect   = that.picker.getBoundingClientRect(),
+			bottom = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
 		that.calendar.style.top = (rect.bottom + that.options.offsetX) + "px";
 		that.calendar.style.left = (rect.left + that.options.offsetY) + "px";
 		that.calendar.style.display = 'inline-block';
 		this.calendar.style.visibility = 'inherit';
+
+		var calrect = that.calendar.getBoundingClientRect();
+
+		if( calrect.bottom > bottom ) {
+			that.calendar.style.top = ((rect.top - calrect.height) + that.options.offsetX) + "px";
+		}
 	};
 
 	this.hide = function() {
