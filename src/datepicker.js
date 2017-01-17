@@ -41,7 +41,26 @@ var DatePicker = function( picker, options ) {
 	this.offset = 0;
 
 	this.display = function() {
-		var rect   = that.picker.getBoundingClientRect(),
+		var pageRect = function( elm ) {
+			var top  = 0,
+				left = 0,
+				rect = elm.getBoundingClientRect();
+
+			do {
+				top += elm.offsetTop || 0;
+				left += elm.offsetLeft || 0;
+				elm = elm.offsetParent;
+			} while( elm );
+
+			return {
+				top   : top,
+				bottom: top - (rect.top - rect.bottom),
+				left  : left,
+				right : left - (rect.left - rect.right)
+			};
+		};
+
+		var rect   = pageRect(that.picker),
 			bottom = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
 		that.calendar.style.top = (rect.bottom + that.options.offsetX) + "px";
