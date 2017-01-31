@@ -156,8 +156,8 @@ DatePicker.prototype = {
 		next.innerHTML = this.options.next;
 
 		next.addEventListener('click', function() {
-			that.picker.focus();
 			that.setMonth(that.options.date.getMonth() + 1);
+			that.picker.focus();
 		});
 
 		var prev = document.createElement('span');
@@ -166,8 +166,8 @@ DatePicker.prototype = {
 		prev.innerHTML = this.options.prev;
 
 		prev.addEventListener('click', function() {
-			that.picker.focus();
 			that.setMonth(that.options.date.getMonth() - 1);
+			that.picker.focus();
 		});
 
 		header.appendChild(next);
