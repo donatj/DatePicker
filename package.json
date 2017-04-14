@@ -1,0 +1,33 @@
+{
+  "name": "basic-datepicker",
+  "description": "Simple No Framework No Nonsense JavaScript Date Picker",
+  "main": "./lib/datepicker.js",
+  "version": "0.2.0",
+  "types": "./lib/datepicker.d.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/donatj/DatePicker.git"
+  },
+  "keywords": [
+    "datepicker",
+    "simple"
+  ],
+  "author": {
+    "name": "Jesse G. Donat",
+    "email": "donatj@gmail.com",
+    "url": "https://donatstudios.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/donatj/DatePicker/issues"
+  },
+  "homepage": "https://github.com/donatj/DatePicker#readme",
+  "devDependencies": {
+    "@types/node": "^7.0.12",
+    "@types/requirejs": "^2.1.29",
+    "mocha": "^3.2.0"
+  }
+}
