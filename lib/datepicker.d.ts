@@ -1,6 +1,4 @@
-interface OnPickCallback {
-    (elm: HTMLInputElement): void;
-}
+declare type OnPickCallback = (elm: HTMLInputElement) => void;
 interface OptionsInterface {
     outputFormat: string;
     days: string[];
@@ -21,15 +19,15 @@ declare class DatePicker {
     protected calendar: HTMLDivElement;
     protected options: OptionsInterface;
     /**
-     * @param {Node} picker
-     * @param {Object} options
+     * @param {!Node} picker
+     * @param {?Object} options
      * @constructor
      */
     constructor(picker: HTMLInputElement, options?: OptionsInterface);
     hide(): void;
     display(): void;
     /**
-     * @param {Date} date
+     * @param {!Date} date
      * @returns {number}
      */
     private getDaysInMonth(date);
@@ -38,13 +36,28 @@ declare class DatePicker {
      */
     setPickerDate(date: Date): void;
     /**
-     * @param {number} month
+     * @param {!number} month
      */
     setMonth(month: number): void;
     /**
-     * @param {number} year
+     * @param {!number} year
      */
     setYear(year: number): void;
+    /**
+     * @param {?Date} date
+     */
+    setMinDate(date: Date | null): void;
+    /**
+     * @param {?Date} date
+     */
+    setMaxDate(date: Date | null): void;
+    /**
+     * @param callback
+     */
+    setOnPick(callback: OnPickCallback): void;
+    /**
+     * @returns {Date}
+     */
     getWorkingDate(): Date;
     private render();
     /**

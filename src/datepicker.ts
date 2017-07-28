@@ -1,8 +1,6 @@
 "use strict";
 
-interface OnPickCallback {
-	(elm: HTMLInputElement): void;
-}
+type OnPickCallback = (elm: HTMLInputElement) => void;
 
 interface OptionsInterface {
 	outputFormat: string,
@@ -42,8 +40,8 @@ class DatePicker {
 	};
 
 	/**
-	 * @param {Node} picker
-	 * @param {Object} options
+	 * @param {!Node} picker
+	 * @param {?Object} options
 	 * @constructor
 	 */
 	constructor(protected picker: HTMLInputElement, options?: OptionsInterface) {
@@ -111,7 +109,7 @@ class DatePicker {
 	}
 
 	/**
-	 * @param {Date} date
+	 * @param {!Date} date
 	 * @returns {number}
 	 */
 	private getDaysInMonth(date: Date) {
@@ -133,7 +131,7 @@ class DatePicker {
 	}
 
 	/**
-	 * @param {number} month
+	 * @param {!number} month
 	 */
 	public setMonth(month: number) {
 		this.options.date.setMonth(month);
@@ -141,13 +139,39 @@ class DatePicker {
 	}
 
 	/**
-	 * @param {number} year
+	 * @param {!number} year
 	 */
 	public setYear(year: number) {
 		this.options.date.setFullYear(year);
 		this.render();
 	}
 
+	/**
+	 * @param {?Date} date
+	 */
+	public setMinDate(date: Date | null) {
+		this.options.minDate = date;
+		this.render();
+	}
+
+	/**
+	 * @param {?Date} date
+	 */
+	public setMaxDate(date: Date | null) {
+		this.options.maxDate = date;
+		this.render();
+	}
+
+	/**
+	 * @param callback 
+	 */
+	public setOnPick(callback: OnPickCallback) {
+		this.options.onPick = callback;
+	}
+
+	/**
+	 * @returns {Date}
+	 */
 	public getWorkingDate() {
 		return (new Date(this.options.date.getFullYear(), this.options.date.getMonth(), 1))
 	}
