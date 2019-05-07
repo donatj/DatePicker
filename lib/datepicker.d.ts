@@ -28,7 +28,7 @@ declare class DatePicker {
      * @param {?Object} options
      * @constructor
      */
-    constructor(picker: HTMLInputElement, options?: OptionsInterface);
+    constructor(picker: HTMLInputElement, options?: Partial<OptionsInterface>);
     hide(): void;
     display(): void;
     /**

@@ -51,7 +51,7 @@ class DatePicker {
 	 * @param {?Object} options
 	 * @constructor
 	 */
-	constructor(protected picker: HTMLInputElement, options?: OptionsInterface) {
+	constructor(protected picker: HTMLInputElement, options?: Partial<OptionsInterface>) {
 		this.options = { ...this.options, ...options };
 
 		this.calendar = document.createElement('div');
