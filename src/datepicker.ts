@@ -1,5 +1,8 @@
 "use strict";
 
+declare var module: { exports: any };
+declare function define( dependencies: string[], callback: () => any ): void;
+
 type OnPickCallback = (elm: HTMLInputElement) => void;
 
 interface OptionsInterface {
@@ -17,7 +20,7 @@ interface OptionsInterface {
 	offsetY: 0
 }
 
-class DatePicker {
+export default class DatePicker {
 
 	public offset: number = 0;
 
