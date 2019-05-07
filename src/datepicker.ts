@@ -365,7 +365,7 @@ export default class DatePicker {
 	}
 }
 
-if (typeof module!== "undefined" && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
 	module.exports = DatePicker;
 }
 
