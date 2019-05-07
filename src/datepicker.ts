@@ -1,7 +1,6 @@
 "use strict";
 
 declare var module: { exports: any };
-declare function define( dependencies: string[], callback: () => any ): void;
 
 type OnPickCallback = (elm: HTMLInputElement) => void;
 
