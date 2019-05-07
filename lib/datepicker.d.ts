@@ -2,10 +2,12 @@ declare var module: {
     exports: any;
 };
 declare type OnPickCallback = (elm: HTMLInputElement) => void;
+declare type DayPickerCallback = (day: number, format: "long" | "short") => string;
+declare type MonthPickerCallback = (month: number, format: "long" | "short") => string;
 interface OptionsInterface {
     outputFormat: string;
-    days: string[];
-    months: string[];
+    days: string[] | DayPickerCallback;
+    months: string[] | MonthPickerCallback;
     next: string;
     prev: string;
     date: Date;

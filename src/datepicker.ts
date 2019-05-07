@@ -3,11 +3,13 @@
 declare var module: { exports: any };
 
 type OnPickCallback = (elm: HTMLInputElement) => void;
+type DayPickerCallback = (day: number, format: "long" | "short") => string;
+type MonthPickerCallback = (month: number, format: "long" | "short") => string;
 
 interface OptionsInterface {
 	outputFormat: string;
-	days: string[];
-	months: string[];
+	days: string[] | DayPickerCallback;
+	months: string[] | MonthPickerCallback;
 	next: string;
 	prev: string;
 	date: Date;
@@ -27,9 +29,12 @@ class DatePicker {
 
 	protected options: OptionsInterface = {
 		outputFormat: 'Y-m-d',
-		days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-		months: ["January", "February", "March", "April", "May", "June",
-			"July", "August", "September", "October", "November", "December"],
+		days: (day: number, format: "long" | "short"): string => {
+			return new Date(1995, 1, day).toLocaleDateString(document.documentElement.lang || 'en', { weekday: format });
+		},
+		months: (month: number, format: "long" | "short"): string => {
+			return new Date(2000, month, 2).toLocaleDateString(document.documentElement.lang || 'en', { month: format });
+		},
 		next: '▶',
 		prev: '◀',
 		date: new Date(),
@@ -76,10 +81,11 @@ class DatePicker {
 	}
 
 	public display() {
-		const pageRect = function(elm: HTMLElement) {
+		const pageRect = (elm: HTMLElement) => {
 			let top = 0,
-				left = 0,
-				rect = elm.getBoundingClientRect();
+				left = 0;
+
+			const irect = elm.getBoundingClientRect();
 
 			do {
 				top += elm.offsetTop || 0;
@@ -89,9 +95,9 @@ class DatePicker {
 
 			return {
 				top,
-				bottom: top - (rect.top - rect.bottom),
+				bottom: top - (irect.top - irect.bottom),
 				left,
-				right: left - (rect.left - rect.right),
+				right: left - (irect.left - irect.right),
 			};
 		};
 
@@ -293,10 +299,29 @@ class DatePicker {
 		let str = '';
 		if (date) {
 			const j = date.getDate(), w = date.getDay(),
-				l = this.options.days[w],
 				n = date.getMonth() + 1,
-				f = this.options.months[n - 1],
 				y = date.getFullYear() + '';
+
+			let l = "";
+			let D = "";
+			if (typeof this.options.days === 'function') {
+				l = this.options.days(w, "long");
+				D = this.options.days(w, "short");
+			} else {
+				l = this.options.days[w];
+				D = l.substr(0, 3);
+			}
+
+			let f = "";
+			let M = "";
+			if (typeof this.options.months === 'function') {
+				f = this.options.months(n - 1, "long");
+				M = this.options.months(n - 1, "short");
+			} else {
+				f = this.options.months[n - 1];
+				M = f.substr(0, 3);
+			}
+
 			for (let i = 0, len = format.length; i < len; i++) {
 				const cha = format.charAt(i);
 				switch (cha) {
@@ -317,7 +342,7 @@ class DatePicker {
 						str += n;
 						break;
 					case 'M': // Jan - Dec
-						str += f.substr(0, 3);
+						str += M;
 						break;
 					case 'F': // January - December
 						str += f;
@@ -333,7 +358,7 @@ class DatePicker {
 						str += j;
 						break;
 					case 'D': // Sun - Sat
-						str += l.substr(0, 3);
+						str += D;
 						break;
 					case 'l': // Sunday - Saturday
 						str += l;
@@ -369,7 +394,7 @@ if (typeof module !== "undefined" && module.exports) {
 }
 
 if (typeof define === "function") {
-	define([], function() {
+	define([], () => {
 		return DatePicker;
 	});
 }
