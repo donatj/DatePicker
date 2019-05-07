@@ -5,18 +5,18 @@ declare var module: { exports: any };
 type OnPickCallback = (elm: HTMLInputElement) => void;
 
 interface OptionsInterface {
-	outputFormat: string,
-	days: string[],
-	months: string[],
-	next: string,
-	prev: string,
-	date: Date,
-	minDate: Date | null,
-	maxDate: Date | null,
-	onPick: OnPickCallback,
-	triggerChangeEvent: boolean,
-	offsetX: 0,
-	offsetY: 0
+	outputFormat: string;
+	days: string[];
+	months: string[];
+	next: string;
+	prev: string;
+	date: Date;
+	minDate: Date | null;
+	maxDate: Date | null;
+	onPick: OnPickCallback;
+	triggerChangeEvent: boolean;
+	offsetX: 0;
+	offsetY: 0;
 }
 
 class DatePicker {
@@ -38,7 +38,7 @@ class DatePicker {
 		onPick: () => { /*....*/ },
 		triggerChangeEvent: true,
 		offsetX: 0,
-		offsetY: 0
+		offsetY: 0,
 	};
 
 	/**
@@ -51,9 +51,9 @@ class DatePicker {
 
 		this.calendar = document.createElement('div');
 		this.calendar.className = 'DatePicker';
-		let body = document.querySelector('body');
+		const body = document.querySelector('body');
 		if (!body) {
-			throw "Failed to find body tag";
+			throw new Error("Failed to find body tag");
 		}
 		body.appendChild(this.calendar);
 
@@ -76,26 +76,26 @@ class DatePicker {
 	}
 
 	public display() {
-		var pageRect = function (elm : HTMLElement) {
-			var top = 0,
+		const pageRect = function(elm: HTMLElement) {
+			let top = 0,
 				left = 0,
 				rect = elm.getBoundingClientRect();
 
 			do {
 				top += elm.offsetTop || 0;
 				left += elm.offsetLeft || 0;
-				elm = <HTMLElement>elm.offsetParent;
+				elm = elm.offsetParent as HTMLElement;
 			} while (elm);
 
 			return {
-				top: top,
+				top,
 				bottom: top - (rect.top - rect.bottom),
-				left: left,
-				right: left - (rect.left - rect.right)
+				left,
+				right: left - (rect.left - rect.right),
 			};
 		};
 
-		var rect = pageRect(this.picker),
+		const rect = pageRect(this.picker),
 			bottom = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
 		this.calendar.style.top = (rect.bottom + this.options.offsetX) + "px";
@@ -103,7 +103,7 @@ class DatePicker {
 		this.calendar.style.display = 'inline-block';
 		this.calendar.style.visibility = 'inherit';
 
-		let calrect = this.calendar.getBoundingClientRect();
+		const calrect = this.calendar.getBoundingClientRect();
 
 		if (calrect.bottom > bottom) {
 			this.calendar.style.top = ((rect.top - calrect.height) + this.options.offsetX) + "px";
@@ -116,13 +116,13 @@ class DatePicker {
 	 */
 	private getDaysInMonth(date: Date) {
 		for (let i = 27; i <= 32; i++) {
-			let workingDate = new Date(date.getFullYear(), date.getMonth(), i);
+			const workingDate = new Date(date.getFullYear(), date.getMonth(), i);
 			if (workingDate.getMonth() != date.getMonth()) {
 				return i - 1;
 			}
 		}
 
-		throw "Days in Month Unknown!";
+		throw new Error("Days in Month Unknown!");
 	}
 
 	/**
@@ -165,7 +165,7 @@ class DatePicker {
 	}
 
 	/**
-	 * @param callback 
+	 * @param callback
 	 */
 	public setOnPick(callback: OnPickCallback) {
 		this.options.onPick = callback;
@@ -175,22 +175,22 @@ class DatePicker {
 	 * @returns {Date}
 	 */
 	public getWorkingDate() {
-		return (new Date(this.options.date.getFullYear(), this.options.date.getMonth(), 1))
+		return (new Date(this.options.date.getFullYear(), this.options.date.getMonth(), 1));
 	}
 
 	private render() {
-		let that = this;
+		const that = this;
 		this.calendar.innerHTML = '';
 
-		let workingDate = this.getWorkingDate();
-		let header = document.createElement('div');
+		const workingDate = this.getWorkingDate();
+		const header = document.createElement('div');
 		header.className = 'DatePicker-header';
 
 		header.innerHTML = this.format(workingDate, 'F Y');
 
 		this.calendar.appendChild(header);
 
-		let next = document.createElement('span');
+		const next = document.createElement('span');
 
 		next.className = 'DatePicker-next-month';
 		next.innerHTML = this.options.next;
@@ -200,7 +200,7 @@ class DatePicker {
 			this.picker.focus();
 		});
 
-		let prev = document.createElement('span');
+		const prev = document.createElement('span');
 
 		prev.className = 'DatePicker-prev-month';
 		prev.innerHTML = this.options.prev;
@@ -213,10 +213,10 @@ class DatePicker {
 		header.appendChild(next);
 		header.appendChild(prev);
 
-		let tbl = document.createElement('table');
+		const tbl = document.createElement('table');
 		this.calendar.appendChild(tbl);
 
-		let wday = workingDate.getDay() - this.offset;
+		const wday = workingDate.getDay() - this.offset;
 
 		let tr = document.createElement('tr');
 		tbl.appendChild(tr);
@@ -224,32 +224,32 @@ class DatePicker {
 		let count = wday + 1;
 
 		if (wday > 0) {
-			let startTd = document.createElement('td');
+			const startTd = document.createElement('td');
 			startTd.colSpan = wday;
 			startTd.innerHTML = '&nbsp;';
 			tr.appendChild(startTd);
 		}
 
 		for (let i = 1; i <= this.getDaysInMonth(this.options.date); i++) {
-			let td = document.createElement('td');
+			const td = document.createElement('td');
 			td.innerHTML = i.toString();
 			td.className = 'DatePicker-date';
 
-			let dayDate = new Date(workingDate.getFullYear(), workingDate.getMonth(), i);
+			const dayDate = new Date(workingDate.getFullYear(), workingDate.getMonth(), i);
 
 			if ((this.options.minDate === null || this.options.minDate <= dayDate) && (this.options.maxDate === null || this.options.maxDate >= dayDate)) {
-				td.addEventListener('click', function (date: Date) {
+				td.addEventListener('click', function(date: Date) {
 					return () => {
 						that.setPickerDate(date);
 						that.options.onPick.apply(that.picker);
 						if (that.options.triggerChangeEvent) {
 							if (that.picker.dispatchEvent) { // IE9+
-								let evt = document.createEvent("HTMLEvents");
+								const evt = document.createEvent("HTMLEvents");
 								evt.initEvent('change', true, true);
 								return !that.picker.dispatchEvent(evt);
 							}
 						}
-					}
+					};
 				}(dayDate));
 			} else {
 				td.className += " DatePicker-date-disabled";
@@ -268,7 +268,7 @@ class DatePicker {
 		}
 
 		if (count != 1) {
-			let endTd = document.createElement('td');
+			const endTd = document.createElement('td');
 			endTd.colSpan = 8 - count;
 			endTd.innerHTML = '&nbsp;';
 			tr.appendChild(endTd);
@@ -292,13 +292,13 @@ class DatePicker {
 	private format(date: Date, format: string) {
 		let str = '';
 		if (date) {
-			let j = date.getDate(), w = date.getDay(),
+			const j = date.getDate(), w = date.getDay(),
 				l = this.options.days[w],
 				n = date.getMonth() + 1,
 				f = this.options.months[n - 1],
 				y = date.getFullYear() + '';
 			for (let i = 0, len = format.length; i < len; i++) {
-				let cha = format.charAt(i);
+				const cha = format.charAt(i);
 				switch (cha) {
 					case 'y': // xx - xx
 						str += y.substr(2);
@@ -369,7 +369,7 @@ if (typeof module !== "undefined" && module.exports) {
 }
 
 if (typeof define === "function") {
-	define([], function () {
+	define([], function() {
 		return DatePicker;
 	});
 }
