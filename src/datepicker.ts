@@ -17,7 +17,7 @@ interface OptionsInterface {
 	offsetY: 0
 }
 
-class DatePicker {
+export default class DatePicker {
 
 	public offset: number = 0;
 
@@ -362,12 +362,12 @@ class DatePicker {
 	}
 }
 
-if (typeof module !== "undefined" && module.exports) {
-	module.exports = DatePicker;
+if (typeof ( window as any ).module!== "undefined" && ( window as any ).module.exports) {
+	( window as any ).module.exports = DatePicker;
 }
 
-if (typeof define === "function") {
-	define([], function () {
+if (typeof ( window as any ).define === "function") {
+	( window as any ).define([], function () {
 		return DatePicker;
 	});
 }
