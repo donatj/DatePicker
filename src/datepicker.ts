@@ -1,5 +1,8 @@
 "use strict";
 
+declare var module: { exports: any };
+declare function define( dependencies: string[], callback: () => any ): void;
+
 type OnPickCallback = (elm: HTMLInputElement) => void;
 
 interface OptionsInterface {
@@ -362,12 +365,12 @@ export default class DatePicker {
 	}
 }
 
-if (typeof ( window as any ).module!== "undefined" && ( window as any ).module.exports) {
-	( window as any ).module.exports = DatePicker;
+if (typeof module!== "undefined" && module.exports) {
+	module.exports = DatePicker;
 }
 
-if (typeof ( window as any ).define === "function") {
-	( window as any ).define([], function () {
+if (typeof define === "function") {
+	define([], function () {
 		return DatePicker;
 	});
 }
