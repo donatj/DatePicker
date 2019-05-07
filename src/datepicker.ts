@@ -19,7 +19,7 @@ interface OptionsInterface {
 	offsetY: 0
 }
 
-export default class DatePicker {
+class DatePicker {
 
 	public offset: number = 0;
 

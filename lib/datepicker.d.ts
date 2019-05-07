@@ -1,3 +1,6 @@
+declare var module: {
+    exports: any;
+};
 declare type OnPickCallback = (elm: HTMLInputElement) => void;
 interface OptionsInterface {
     outputFormat: string;
@@ -13,7 +16,7 @@ interface OptionsInterface {
     offsetX: 0;
     offsetY: 0;
 }
-export default class DatePicker {
+declare class DatePicker {
     protected picker: HTMLInputElement;
     offset: number;
     protected calendar: HTMLDivElement;
@@ -75,4 +78,3 @@ export default class DatePicker {
      */
     private format;
 }
-export {};
