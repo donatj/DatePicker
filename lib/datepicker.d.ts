@@ -13,7 +13,7 @@ interface OptionsInterface {
     offsetX: 0;
     offsetY: 0;
 }
-declare class DatePicker {
+export default class DatePicker {
     protected picker: HTMLInputElement;
     offset: number;
     protected calendar: HTMLDivElement;
@@ -30,7 +30,7 @@ declare class DatePicker {
      * @param {!Date} date
      * @returns {number}
      */
-    private getDaysInMonth(date);
+    private getDaysInMonth;
     /**
      * @param {Date} date
      */
@@ -59,7 +59,7 @@ declare class DatePicker {
      * @returns {Date}
      */
     getWorkingDate(): Date;
-    private render();
+    private render;
     /**
      * From: http://www.electricprism.com/aeron/calendar/
      *
@@ -73,5 +73,6 @@ declare class DatePicker {
      * @param format
      * @returns {string}
      */
-    private format(date, format);
+    private format;
 }
+export {};
