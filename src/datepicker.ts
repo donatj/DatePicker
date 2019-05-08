@@ -2,7 +2,7 @@
 
 declare var module: { exports: any };
 
-type OnPickCallback = (elm: HTMLInputElement) => void;
+type OnPickCallback = (this: HTMLInputElement) => void;
 type DayPickerCallback = (day: number, format: "long" | "short") => string;
 type MonthPickerCallback = (month: number, format: "long" | "short") => string;
 
@@ -25,7 +25,7 @@ class DatePicker {
 
 	public offset: number = 0;
 
-	protected calendar: HTMLDivElement;
+	protected calendar = document.createElement('div');
 
 	protected options: OptionsInterface = {
 		outputFormat: 'Y-m-d',
@@ -54,8 +54,8 @@ class DatePicker {
 	constructor(protected picker: HTMLInputElement, options?: Partial<OptionsInterface>) {
 		this.options = { ...this.options, ...options };
 
-		this.calendar = document.createElement('div');
 		this.calendar.className = 'DatePicker';
+
 		const body = document.querySelector('body');
 		if (!body) {
 			throw new Error("Failed to find body tag");
@@ -81,27 +81,7 @@ class DatePicker {
 	}
 
 	public display() {
-		const pageRect = (elm: HTMLElement) => {
-			let top = 0,
-				left = 0;
-
-			const irect = elm.getBoundingClientRect();
-
-			do {
-				top += elm.offsetTop || 0;
-				left += elm.offsetLeft || 0;
-				elm = elm.offsetParent as HTMLElement;
-			} while (elm);
-
-			return {
-				top,
-				bottom: top - (irect.top - irect.bottom),
-				left,
-				right: left - (irect.left - irect.right),
-			};
-		};
-
-		const rect = pageRect(this.picker),
+		const rect = this.pageRect(this.picker),
 			bottom = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
 		this.calendar.style.top = (rect.bottom + this.options.offsetX) + "px";
@@ -185,7 +165,6 @@ class DatePicker {
 	}
 
 	private render() {
-		const that = this;
 		this.calendar.innerHTML = '';
 
 		const workingDate = this.getWorkingDate();
@@ -243,20 +222,23 @@ class DatePicker {
 
 			const dayDate = new Date(workingDate.getFullYear(), workingDate.getMonth(), i);
 
-			if ((this.options.minDate === null || this.options.minDate <= dayDate) && (this.options.maxDate === null || this.options.maxDate >= dayDate)) {
-				td.addEventListener('click', function(date: Date) {
+			if ((this.options.minDate === null || this.options.minDate <= dayDate)
+				&& (this.options.maxDate === null || this.options.maxDate >= dayDate)) {
+				td.addEventListener('click', ((date: Date) => {
 					return () => {
-						that.setPickerDate(date);
-						that.options.onPick.apply(that.picker);
-						if (that.options.triggerChangeEvent) {
-							if (that.picker.dispatchEvent) { // IE9+
+						this.setPickerDate(date);
+						this.options.onPick.apply(this.picker);
+						if (this.options.triggerChangeEvent) {
+							if (this.picker.dispatchEvent) { // IE9+
 								const evt = document.createEvent("HTMLEvents");
 								evt.initEvent('change', true, true);
-								return !that.picker.dispatchEvent(evt);
+								return !this.picker.dispatchEvent(evt);
 							}
 						}
+
+						return undefined;
 					};
-				}(dayDate));
+				})(dayDate));
 			} else {
 				td.className += " DatePicker-date-disabled";
 			}
@@ -282,6 +264,26 @@ class DatePicker {
 
 	}
 
+	private pageRect(elm: HTMLElement) {
+		let top = 0,
+			left = 0;
+
+		const irect = elm.getBoundingClientRect();
+
+		do {
+			top += elm.offsetTop || 0;
+			left += elm.offsetLeft || 0;
+			elm = elm.offsetParent as HTMLElement;
+		} while (elm);
+
+		return {
+			top,
+			bottom: top - (irect.top - irect.bottom),
+			left,
+			right: left - (irect.left - irect.right),
+		};
+	}
+
 	/**
 	 * From: http://www.electricprism.com/aeron/calendar/
 	 *
@@ -291,8 +293,8 @@ class DatePicker {
 	 * Copyright:
 	 * Copyright (c) 2008 [Aeron Glemann](http://www.electricprism.com/aeron/)
 	 *
-	 * @param date
-	 * @param format
+	 * @param {Date} date
+	 * @param {string} format
 	 * @returns {string}
 	 */
 	private format(date: Date, format: string) {
