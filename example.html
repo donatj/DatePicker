@@ -32,7 +32,8 @@
 
 	for( var i = 0; i <= inputs.length - 1; i++ ) {
 		new DatePicker(inputs[i], {
-			outputFormat: inputs[i].getAttribute('data-format')
+			outputFormat: inputs[i].getAttribute('data-format'),
+			onPick: function(date){ console.log(date) }
 		});
 	}
 </script>

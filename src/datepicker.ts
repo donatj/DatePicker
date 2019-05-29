@@ -2,7 +2,7 @@
 
 declare var module: { exports: any };
 
-type OnPickCallback = (this: HTMLInputElement) => void;
+type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
 type DayPickerCallback = (day: number, format: "long" | "short") => string;
 type MonthPickerCallback = (month: number, format: "long" | "short") => string;
 
@@ -227,7 +227,7 @@ class DatePicker {
 				td.addEventListener('click', ((date: Date) => {
 					return () => {
 						this.setPickerDate(date);
-						this.options.onPick.apply(this.picker);
+						this.options.onPick.apply(this.picker, [date]);
 						if (this.options.triggerChangeEvent) {
 							if (this.picker.dispatchEvent) { // IE9+
 								const evt = document.createEvent("HTMLEvents");
