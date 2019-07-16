@@ -29,19 +29,25 @@ class DatePicker {
 
 	protected options: OptionsInterface = {
 		outputFormat: 'Y-m-d',
+
 		days: (day: number, format: "long" | "short"): string => {
 			return new Date(1995, 1, day).toLocaleDateString(document.documentElement.lang || 'en', { weekday: format });
 		},
 		months: (month: number, format: "long" | "short"): string => {
 			return new Date(2000, month, 2).toLocaleDateString(document.documentElement.lang || 'en', { month: format });
 		},
+
+		date: new Date(),
+
 		next: '▶',
 		prev: '◀',
-		date: new Date(),
-		minDate: null,
+
 		maxDate: null,
+		minDate: null,
+
 		onPick: () => { /*....*/ },
 		triggerChangeEvent: true,
+
 		offsetX: 0,
 		offsetY: 0,
 	};
@@ -277,8 +283,9 @@ class DatePicker {
 		} while (elm);
 
 		return {
-			top,
 			bottom: top - (irect.top - irect.bottom),
+			top,
+
 			left,
 			right: left - (irect.left - irect.right),
 		};
