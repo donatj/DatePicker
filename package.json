@@ -28,7 +28,7 @@
   "devDependencies": {
     "@types/requirejs": "^2.1.29",
     "mocha": "^6.1.4",
-    "typescript": "^3.4.5",
-    "tslint": "^5.16.0"
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
   }
 }
