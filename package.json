@@ -27,8 +27,8 @@
   "homepage": "https://github.com/donatj/DatePicker#readme",
   "devDependencies": {
     "@types/requirejs": "^2.1.29",
-    "mocha": "^6.1.4",
-    "tslint": "^5.18.0",
-    "typescript": "^3.5.3"
+    "mocha": "^7.1.0",
+    "tslint": "^6.1.0",
+    "typescript": "^3.8.3"
   }
 }
