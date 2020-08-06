@@ -13,6 +13,7 @@ interface OptionsInterface {
 	next: string;
 	prev: string;
 	date: Date;
+	pickerDateUTC: boolean;
 	minDate: Date | null;
 	maxDate: Date | null;
 	onPick: OnPickCallback;
@@ -45,6 +46,7 @@ class DatePicker {
 		},
 
 		date: new Date(),
+		pickerDateUTC: false,
 
 		next: '▶',
 		prev: '◀',
@@ -109,11 +111,7 @@ class DatePicker {
 		}
 	}
 
-	/**
-	 * @param {!Date} date
-	 * @returns {number}
-	 */
-	private getDaysInMonth(date: Date) {
+	private getDaysInMonth(date: Date): number {
 		for (let i = 27; i <= 32; i++) {
 			const workingDate = new Date(date.getFullYear(), date.getMonth(), i);
 			if (workingDate.getMonth() != date.getMonth()) {
@@ -128,7 +126,7 @@ class DatePicker {
 	 * @param {Date} date
 	 */
 	public setPickerDate(date: Date): void {
-		this.picker.value = this.format(date, this.options.outputFormat);
+		this.picker.value = this.format(date, this.options.outputFormat, this.options.pickerDateUTC);
 	}
 
 	/**
@@ -184,7 +182,7 @@ class DatePicker {
 		const header = document.createElement('div');
 		header.className = 'DatePicker-header';
 
-		header.innerHTML = this.format(workingDate, 'F Y');
+		header.innerHTML = this.format(workingDate, 'F Y', false);
 
 		this.calendar.appendChild(header);
 
@@ -311,12 +309,21 @@ class DatePicker {
 	 * @param {string} format
 	 * @returns {string}
 	 */
-	private format(date: Date, format: string): string {
+	private format(date: Date, format: string, utc: boolean): string {
 		let str = '';
 
-		const j = date.getDate(), w = date.getDay(),
-			n = date.getMonth() + 1,
+		let j: number, w: number, n: number, y: string;
+		if (utc) {
+			j = date.getUTCDate();
+			w = date.getUTCDay();
+			n = date.getUTCMonth() + 1;
+			y = date.getUTCFullYear() + '';
+		} else {
+			j = date.getDate();
+			w = date.getDay();
+			n = date.getMonth() + 1;
 			y = date.getFullYear() + '';
+		}
 
 		let l = "";
 		let D = "";

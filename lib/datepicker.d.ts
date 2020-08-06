@@ -11,6 +11,7 @@ interface OptionsInterface {
     next: string;
     prev: string;
     date: Date;
+    pickerDateUTC: boolean;
     minDate: Date | null;
     maxDate: Date | null;
     onPick: OnPickCallback;
@@ -37,10 +38,6 @@ declare class DatePicker {
     constructor(picker: HTMLInputElement, options?: Partial<OptionsInterface>);
     hide(): void;
     display(): void;
-    /**
-     * @param {!Date} date
-     * @returns {number}
-     */
     private getDaysInMonth;
     /**
      * @param {Date} date
