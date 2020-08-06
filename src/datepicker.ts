@@ -21,6 +21,13 @@ interface OptionsInterface {
 	offsetY: number;
 }
 
+interface Rect {
+	bottom: number;
+	top: number;
+	left: number;
+	right: number;
+}
+
 class DatePicker {
 
 	public offset: number = 0;
@@ -87,8 +94,8 @@ class DatePicker {
 	}
 
 	public display() {
-		const rect = this.pageRect(this.picker),
-			bottom = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+		const rect = this.pageRect(this.picker);
+		const bottom = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
 		this.calendar.style.top = (rect.bottom + this.options.offsetX) + "px";
 		this.calendar.style.left = (rect.left + this.options.offsetY) + "px";
@@ -120,14 +127,14 @@ class DatePicker {
 	/**
 	 * @param {Date} date
 	 */
-	public setPickerDate(date: Date) {
+	public setPickerDate(date: Date): void {
 		this.picker.value = this.format(date, this.options.outputFormat);
 	}
 
 	/**
 	 * @param {!number} month
 	 */
-	public setMonth(month: number) {
+	public setMonth(month: number): void {
 		this.options.date.setMonth(month);
 		this.render();
 	}
@@ -135,7 +142,7 @@ class DatePicker {
 	/**
 	 * @param {!number} year
 	 */
-	public setYear(year: number) {
+	public setYear(year: number): void {
 		this.options.date.setFullYear(year);
 		this.render();
 	}
@@ -143,7 +150,7 @@ class DatePicker {
 	/**
 	 * @param {?Date} date
 	 */
-	public setMinDate(date: Date | null) {
+	public setMinDate(date: Date | null): void {
 		this.options.minDate = date;
 		this.render();
 	}
@@ -151,7 +158,7 @@ class DatePicker {
 	/**
 	 * @param {?Date} date
 	 */
-	public setMaxDate(date: Date | null) {
+	public setMaxDate(date: Date | null): void {
 		this.options.maxDate = date;
 		this.render();
 	}
@@ -159,18 +166,18 @@ class DatePicker {
 	/**
 	 * @param callback
 	 */
-	public setOnPick(callback: OnPickCallback) {
+	public setOnPick(callback: OnPickCallback): void {
 		this.options.onPick = callback;
 	}
 
 	/**
 	 * @returns {Date}
 	 */
-	public getWorkingDate() {
+	public getWorkingDate(): Date {
 		return (new Date(this.options.date.getFullYear(), this.options.date.getMonth(), 1));
 	}
 
-	private render() {
+	private render(): void {
 		this.calendar.innerHTML = '';
 
 		const workingDate = this.getWorkingDate();
@@ -270,9 +277,9 @@ class DatePicker {
 
 	}
 
-	private pageRect(elm: HTMLElement) {
-		let top = 0,
-			left = 0;
+	private pageRect(elm: HTMLElement): Rect {
+		let top = 0;
+		let left = 0;
 
 		const irect = elm.getBoundingClientRect();
 
@@ -304,7 +311,7 @@ class DatePicker {
 	 * @param {string} format
 	 * @returns {string}
 	 */
-	private format(date: Date, format: string) {
+	private format(date: Date, format: string): string {
 		let str = '';
 
 		const j = date.getDate(), w = date.getDay(),

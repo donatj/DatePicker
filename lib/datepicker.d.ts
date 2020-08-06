@@ -18,6 +18,12 @@ interface OptionsInterface {
     offsetX: number;
     offsetY: number;
 }
+interface Rect {
+    bottom: number;
+    top: number;
+    left: number;
+    right: number;
+}
 declare class DatePicker {
     protected picker: HTMLInputElement;
     offset: number;
