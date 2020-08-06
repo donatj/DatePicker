@@ -306,94 +306,94 @@ class DatePicker {
 	 */
 	private format(date: Date, format: string) {
 		let str = '';
-		if (date) {
-			const j = date.getDate(), w = date.getDay(),
-				n = date.getMonth() + 1,
-				y = date.getFullYear() + '';
 
-			let l = "";
-			let D = "";
-			if (typeof this.options.days === 'function') {
-				l = this.options.days(w, "long");
-				D = this.options.days(w, "short");
-			} else {
-				l = this.options.days[w];
-				D = l.substr(0, 3);
-			}
+		const j = date.getDate(), w = date.getDay(),
+			n = date.getMonth() + 1,
+			y = date.getFullYear() + '';
 
-			let f = "";
-			let M = "";
-			if (typeof this.options.months === 'function') {
-				f = this.options.months(n - 1, "long");
-				M = this.options.months(n - 1, "short");
-			} else {
-				f = this.options.months[n - 1];
-				M = f.substr(0, 3);
-			}
+		let l = "";
+		let D = "";
+		if (typeof this.options.days === 'function') {
+			l = this.options.days(w, "long");
+			D = this.options.days(w, "short");
+		} else {
+			l = this.options.days[w];
+			D = l.substr(0, 3);
+		}
 
-			for (let i = 0, len = format.length; i < len; i++) {
-				const cha = format.charAt(i);
-				switch (cha) {
-					case 'y': // xx - xx
-						str += y.substr(2);
-						break;
-					case 'Y': // 19xx - 20xx
-						str += y;
-						break;
-					case 'm': // 01 - 12
-						if (n < 10) {
-							str += '0' + n;
-						} else {
-							str += n;
-						}
-						break;
-					case 'n': // 1 - 12
+		let f = "";
+		let M = "";
+		if (typeof this.options.months === 'function') {
+			f = this.options.months(n - 1, "long");
+			M = this.options.months(n - 1, "short");
+		} else {
+			f = this.options.months[n - 1];
+			M = f.substr(0, 3);
+		}
+
+		for (let i = 0, len = format.length; i < len; i++) {
+			const cha = format.charAt(i);
+			switch (cha) {
+				case 'y': // xx - xx
+					str += y.substr(2);
+					break;
+				case 'Y': // 19xx - 20xx
+					str += y;
+					break;
+				case 'm': // 01 - 12
+					if (n < 10) {
+						str += '0' + n;
+					} else {
 						str += n;
-						break;
-					case 'M': // Jan - Dec
-						str += M;
-						break;
-					case 'F': // January - December
-						str += f;
-						break;
-					case 'd': // 01 - 31
-						if (j < 10) {
-							str += '0' + j;
-						} else {
-							str += j;
-						}
-						break;
-					case 'j': // 1 - 31
+					}
+					break;
+				case 'n': // 1 - 12
+					str += n;
+					break;
+				case 'M': // Jan - Dec
+					str += M;
+					break;
+				case 'F': // January - December
+					str += f;
+					break;
+				case 'd': // 01 - 31
+					if (j < 10) {
+						str += '0' + j;
+					} else {
 						str += j;
-						break;
-					case 'D': // Sun - Sat
-						str += D;
-						break;
-					case 'l': // Sunday - Saturday
-						str += l;
-						break;
-					case 'N': // 1 - 7
-						str += w + 1;
-						break;
-					case 'w': // 0 - 6
-						str += w;
-						break;
-					case 'S': // st, nd, rd or th (works well with j)
-						if (j % 10 == 1 && j != 11) {
-							str += 'st';
-						} else if (j % 10 == 2 && j != 12) {
-							str += 'nd';
-						} else if (j % 10 == 3 && j != 13) {
-							str += 'rd';
-						} else {
-							str += 'th';
-						}
-						break;
-					default:
-						str += cha;
-				}
+					}
+					break;
+				case 'j': // 1 - 31
+					str += j;
+					break;
+				case 'D': // Sun - Sat
+					str += D;
+					break;
+				case 'l': // Sunday - Saturday
+					str += l;
+					break;
+				case 'N': // 1 - 7
+					str += w + 1;
+					break;
+				case 'w': // 0 - 6
+					str += w;
+					break;
+				case 'S': // st, nd, rd or th (works well with j)
+					if (j % 10 == 1 && j != 11) {
+						str += 'st';
+					} else if (j % 10 == 2 && j != 12) {
+						str += 'nd';
+					} else if (j % 10 == 3 && j != 13) {
+						str += 'rd';
+					} else {
+						str += 'th';
+					}
+					break;
+				default:
+					str += cha;
 			}
 		}
+
 		return str;
 	}
 }
