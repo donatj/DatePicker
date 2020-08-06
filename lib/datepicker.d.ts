@@ -1,7 +1,7 @@
 declare var module: {
     exports: any;
 };
-declare type OnPickCallback = (elm: HTMLInputElement) => void;
+declare type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
 declare type DayPickerCallback = (day: number, format: "long" | "short") => string;
 declare type MonthPickerCallback = (month: number, format: "long" | "short") => string;
 interface OptionsInterface {
@@ -15,8 +15,8 @@ interface OptionsInterface {
     maxDate: Date | null;
     onPick: OnPickCallback;
     triggerChangeEvent: boolean;
-    offsetX: 0;
-    offsetY: 0;
+    offsetX: number;
+    offsetY: number;
 }
 declare class DatePicker {
     protected picker: HTMLInputElement;
@@ -65,6 +65,7 @@ declare class DatePicker {
      */
     getWorkingDate(): Date;
     private render;
+    private pageRect;
     /**
      * From: http://www.electricprism.com/aeron/calendar/
      *
@@ -74,8 +75,8 @@ declare class DatePicker {
      * Copyright:
      * Copyright (c) 2008 [Aeron Glemann](http://www.electricprism.com/aeron/)
      *
-     * @param date
-     * @param format
+     * @param {Date} date
+     * @param {string} format
      * @returns {string}
      */
     private format;

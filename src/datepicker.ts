@@ -17,8 +17,8 @@ interface OptionsInterface {
 	maxDate: Date | null;
 	onPick: OnPickCallback;
 	triggerChangeEvent: boolean;
-	offsetX: 0;
-	offsetY: 0;
+	offsetX: number;
+	offsetY: number;
 }
 
 class DatePicker {
