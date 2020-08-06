@@ -46,7 +46,7 @@ class DatePicker {
 		},
 
 		date: new Date(),
-		pickerDateUTC: false,
+		pickerDateUTC: true,
 
 		next: '▶',
 		prev: '◀',
