@@ -44,9 +44,11 @@ declare class DatePicker {
     display(): void;
     private getDaysInMonth;
     /**
+     * Set the currently picked date of the picker
+     *
      * @param {?Date} date
      */
-    setPickerDate(date: Date | null): void;
+    setPickerDate(date: Date | string | null): void;
     /**
      * Get the current date of the picker
      *

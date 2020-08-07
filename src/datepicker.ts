@@ -99,7 +99,11 @@ class DatePicker {
 			hideTimeout = setTimeout(this.hide.bind(this), 300);
 		});
 
-		this.setPickerDate(this.options.pickerDate);
+		if (this.options.pickerDate !== null) {
+			this.setPickerDate(this.options.pickerDate);
+		} else if (this.options.parseUserInput !== false) {
+			this.setPickerDate(this.pickerElm.value);
+		}
 
 		if (this.options.parseUserInput) {
 			let wasInput = false;
@@ -109,16 +113,8 @@ class DatePicker {
 
 			this.pickerElm.addEventListener('change', () => {
 				if (wasInput) {
-					let userDate: Date | null;
-
 					try {
-						if (typeof this.options.parseUserInput == "function") {
-							userDate = this.options.parseUserInput(this.pickerElm.value);
-						} else {
-							userDate = this.parseUserDate(this.pickerElm.value);
-						}
-
-						this.setPickerDate(userDate);
+						this.setPickerDate(this.pickerElm.value);
 					} catch{
 						this.setPickerDate(this.options.pickerDate)
 					}
@@ -191,9 +187,25 @@ class DatePicker {
 	}
 
 	/**
+	 * Set the currently picked date of the picker
+	 * 
 	 * @param {?Date} date
 	 */
-	public setPickerDate(date: Date | null): void {
+	public setPickerDate(date: Date | string | null): void {
+		if (typeof date === "string") {
+			let userDate: Date | null;
+
+			if (typeof this.options.parseUserInput == "function") {
+				userDate = this.options.parseUserInput(date);
+			} else {
+				userDate = this.parseUserDate(date);
+			}
+
+			this.setPickerDate(userDate);
+
+			return;
+		}
+
 		this.options.pickerDate = date;
 		this.pickerElm.value = date ? this.format(date, this.options.outputFormat, this.options.pickerDateUTC) : '';
 
