@@ -15,9 +15,9 @@ interface OptionsInterface {
 
 	date: Date;
 
-	pickerDate: Date|null;
+	pickerDate: Date | null;
 	pickerDateUTC: boolean;
-	
+
 	minDate: Date | null;
 	maxDate: Date | null;
 
@@ -141,16 +141,16 @@ class DatePicker {
 
 	/**
 	 * Get the current date of the picker
-	 * 
+	 *
 	 * @return {?Date}
 	 */
-	public getPickerDate() : Date | null {
+	public getPickerDate(): Date | null {
 		return this.options.pickerDate;
 	}
 
 	/**
 	 * Set the month of the calendar
-	 * 
+	 *
 	 * @param {!number} month
 	 */
 	public setMonth(month: number): void {
@@ -160,7 +160,7 @@ class DatePicker {
 
 	/**
 	 * Set the year of the calendar
-	 * 
+	 *
 	 * @param {!number} year
 	 */
 	public setYear(year: number): void {
@@ -193,7 +193,7 @@ class DatePicker {
 
 	/**
 	 * Get the current calendar year and month as a Date object in local-time
-	 * 
+	 *
 	 * @returns {Date}
 	 */
 	public getWorkingDate(): Date {
@@ -256,10 +256,10 @@ class DatePicker {
 			td.innerHTML = i.toString();
 			td.className = 'DatePicker-date';
 
-			let dayDate : Date;
-			if( this.options.pickerDateUTC ) {
+			let dayDate: Date;
+			if (this.options.pickerDateUTC) {
 				dayDate = new Date(Date.UTC(workingDate.getFullYear(), workingDate.getMonth(), i));
-			}else{
+			} else {
 				dayDate = new Date(workingDate.getFullYear(), workingDate.getMonth(), i);
 			}
 
