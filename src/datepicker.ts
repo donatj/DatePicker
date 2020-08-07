@@ -109,15 +109,19 @@ class DatePicker {
 
 			this.picker.addEventListener('change', () => {
 				if (wasInput) {
-					let userDate;
-					console.log(this.options.parseUserInput);
-					if (typeof this.options.parseUserInput == "function") {
-						userDate = this.options.parseUserInput(this.picker.value);
-					} else {
-						userDate = this.parseUserDate(this.picker.value);
-					}
+					let userDate: Date | null;
 
-					this.setPickerDate(userDate || this.options.pickerDate);
+					try {
+						if (typeof this.options.parseUserInput == "function") {
+							userDate = this.options.parseUserInput(this.picker.value);
+						} else {
+							userDate = this.parseUserDate(this.picker.value);
+						}
+
+						this.setPickerDate(userDate);
+					} catch{
+						this.setPickerDate(this.options.pickerDate)
+					}
 				}
 
 				wasInput = false;
@@ -129,6 +133,10 @@ class DatePicker {
 	}
 
 	protected parseUserDate(input: string): Date | null {
+		if (input.trim() == '') {
+			return null;
+		}
+
 		const d1 = new Date(input);
 		if (isNaN(d1.getTime())) {
 			const newInput = input.replace(/(\d)(?:st|nd|rd|th)/g, "$1");
@@ -136,7 +144,7 @@ class DatePicker {
 				return this.parseUserDate(newInput);
 			}
 
-			return null;
+			throw new Error('failed to parse date');
 		}
 
 		let d2 = new Date(input + " GMT-0000");
