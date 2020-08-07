@@ -11,6 +11,7 @@ interface OptionsInterface {
     next: string;
     prev: string;
     date: Date;
+    pickerDate: Date | null;
     pickerDateUTC: boolean;
     minDate: Date | null;
     maxDate: Date | null;
@@ -40,14 +41,24 @@ declare class DatePicker {
     display(): void;
     private getDaysInMonth;
     /**
-     * @param {Date} date
+     * @param {?Date} date
      */
-    setPickerDate(date: Date): void;
+    setPickerDate(date: Date | null): void;
     /**
+     * Get the current date of the picker
+     *
+     * @return {?Date}
+     */
+    getPickerDate(): Date | null;
+    /**
+     * Set the month of the calendar
+     *
      * @param {!number} month
      */
     setMonth(month: number): void;
     /**
+     * Set the year of the calendar
+     *
      * @param {!number} year
      */
     setYear(year: number): void;
@@ -64,6 +75,8 @@ declare class DatePicker {
      */
     setOnPick(callback: OnPickCallback): void;
     /**
+     * Get the current calendar year and month as a Date object in local-time
+     *
      * @returns {Date}
      */
     getWorkingDate(): Date;

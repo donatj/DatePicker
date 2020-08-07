@@ -12,10 +12,15 @@ interface OptionsInterface {
 	months: string[] | MonthPickerCallback;
 	next: string;
 	prev: string;
+
 	date: Date;
+
+	pickerDate: Date|null;
 	pickerDateUTC: boolean;
+	
 	minDate: Date | null;
 	maxDate: Date | null;
+
 	onPick: OnPickCallback;
 	triggerChangeEvent: boolean;
 	offsetX: number;
@@ -46,6 +51,8 @@ class DatePicker {
 		},
 
 		date: new Date(),
+
+		pickerDate: null,
 		pickerDateUTC: true,
 
 		next: '▶',
@@ -87,6 +94,8 @@ class DatePicker {
 			hideTimeout = setTimeout(this.hide.bind(this), 300);
 		});
 
+		this.setPickerDate(this.options.pickerDate);
+
 		this.render();
 		this.hide();
 	}
@@ -123,13 +132,25 @@ class DatePicker {
 	}
 
 	/**
-	 * @param {Date} date
+	 * @param {?Date} date
 	 */
-	public setPickerDate(date: Date): void {
-		this.picker.value = this.format(date, this.options.outputFormat, this.options.pickerDateUTC);
+	public setPickerDate(date: Date | null): void {
+		this.options.pickerDate = date;
+		this.picker.value = date ? this.format(date, this.options.outputFormat, this.options.pickerDateUTC) : '';
 	}
 
 	/**
+	 * Get the current date of the picker
+	 * 
+	 * @return {?Date}
+	 */
+	public getPickerDate() : Date | null {
+		return this.options.pickerDate;
+	}
+
+	/**
+	 * Set the month of the calendar
+	 * 
 	 * @param {!number} month
 	 */
 	public setMonth(month: number): void {
@@ -138,6 +159,8 @@ class DatePicker {
 	}
 
 	/**
+	 * Set the year of the calendar
+	 * 
 	 * @param {!number} year
 	 */
 	public setYear(year: number): void {
@@ -169,6 +192,8 @@ class DatePicker {
 	}
 
 	/**
+	 * Get the current calendar year and month as a Date object in local-time
+	 * 
 	 * @returns {Date}
 	 */
 	public getWorkingDate(): Date {
@@ -231,7 +256,12 @@ class DatePicker {
 			td.innerHTML = i.toString();
 			td.className = 'DatePicker-date';
 
-			const dayDate = new Date(workingDate.getFullYear(), workingDate.getMonth(), i);
+			let dayDate : Date;
+			if( this.options.pickerDateUTC ) {
+				dayDate = new Date(Date.UTC(workingDate.getFullYear(), workingDate.getMonth(), i));
+			}else{
+				dayDate = new Date(workingDate.getFullYear(), workingDate.getMonth(), i);
+			}
 
 			if ((this.options.minDate === null || this.options.minDate <= dayDate)
 				&& (this.options.maxDate === null || this.options.maxDate >= dayDate)) {
