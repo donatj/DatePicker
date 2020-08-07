@@ -5,6 +5,7 @@ declare var module: { exports: any };
 type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
 type DayPickerCallback = (day: number, format: "long" | "short") => string;
 type MonthPickerCallback = (month: number, format: "long" | "short") => string;
+type UserInputParserCallback = (input: string) => Date | null;
 
 interface OptionsInterface {
 	outputFormat: string;
@@ -14,6 +15,8 @@ interface OptionsInterface {
 	prev: string;
 
 	date: Date;
+
+	parseUserInput: boolean | UserInputParserCallback,
 
 	pickerDate: Date | null;
 	pickerDateUTC: boolean;
@@ -51,6 +54,8 @@ class DatePicker {
 		},
 
 		date: new Date(),
+
+		parseUserInput: true,
 
 		pickerDate: null,
 		pickerDateUTC: true,
@@ -96,8 +101,54 @@ class DatePicker {
 
 		this.setPickerDate(this.options.pickerDate);
 
+		if (this.options.parseUserInput) {
+			let wasInput = false;
+			this.picker.addEventListener('input', () => {
+				wasInput = true;
+			});
+
+			this.picker.addEventListener('change', () => {
+				if (wasInput) {
+					let userDate;
+					console.log(this.options.parseUserInput);
+					if( typeof this.options.parseUserInput == "function"  ) {
+						userDate = this.options.parseUserInput(this.picker.value);
+					}else{
+						userDate = this.parseUserDate(this.picker.value);						
+					}
+					
+					this.setPickerDate(userDate || this.options.pickerDate);
+				}
+
+				wasInput = false;
+			});
+		}
+
 		this.render();
 		this.hide();
+	}
+
+	protected parseUserDate(input: string): Date | null {
+		const d1 = new Date(input);
+		if (isNaN(d1.getTime())) {
+			const newInput = input.replace(/(\d)(?:st|nd|rd|th)/g, "$1");
+			if (newInput != input) {
+				return this.parseUserDate(newInput);
+			}
+
+			return null;
+		}
+
+		let d2 = new Date(input + " GMT-0000");
+		if (isNaN(d2.getTime())) {
+			d2 = d1;
+		}
+
+		if (this.options.pickerDateUTC) {
+			return new Date(Date.UTC(d2.getUTCFullYear(), d2.getUTCMonth(), d2.getUTCDate()));
+		}
+
+		return new Date(d2.getUTCFullYear(), d2.getUTCMonth(), d2.getUTCDate());
 	}
 
 	public hide() {

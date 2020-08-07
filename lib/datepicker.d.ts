@@ -4,6 +4,7 @@ declare var module: {
 declare type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
 declare type DayPickerCallback = (day: number, format: "long" | "short") => string;
 declare type MonthPickerCallback = (month: number, format: "long" | "short") => string;
+declare type UserInputParserCallback = (input: string) => Date | null;
 interface OptionsInterface {
     outputFormat: string;
     days: string[] | DayPickerCallback;
@@ -11,6 +12,7 @@ interface OptionsInterface {
     next: string;
     prev: string;
     date: Date;
+    parseUserInput: boolean | UserInputParserCallback;
     pickerDate: Date | null;
     pickerDateUTC: boolean;
     minDate: Date | null;
@@ -37,6 +39,7 @@ declare class DatePicker {
      * @constructor
      */
     constructor(picker: HTMLInputElement, options?: Partial<OptionsInterface>);
+    protected parseUserDate(input: string): Date | null;
     hide(): void;
     display(): void;
     private getDaysInMonth;
