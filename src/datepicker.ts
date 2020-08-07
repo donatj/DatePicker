@@ -196,6 +196,11 @@ class DatePicker {
 	public setPickerDate(date: Date | null): void {
 		this.options.pickerDate = date;
 		this.picker.value = date ? this.format(date, this.options.outputFormat, this.options.pickerDateUTC) : '';
+
+		if (date) {
+			this.setMonth(this.options.pickerDateUTC ? date.getUTCMonth() : date.getMonth());
+			this.setYear(this.options.pickerDateUTC ? date.getUTCFullYear() : date.getFullYear());
+		}
 	}
 
 	/**
