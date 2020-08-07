@@ -111,12 +111,12 @@ class DatePicker {
 				if (wasInput) {
 					let userDate;
 					console.log(this.options.parseUserInput);
-					if( typeof this.options.parseUserInput == "function"  ) {
+					if (typeof this.options.parseUserInput == "function") {
 						userDate = this.options.parseUserInput(this.picker.value);
-					}else{
-						userDate = this.parseUserDate(this.picker.value);						
+					} else {
+						userDate = this.parseUserDate(this.picker.value);
 					}
-					
+
 					this.setPickerDate(userDate || this.options.pickerDate);
 				}
 
