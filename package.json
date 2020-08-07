@@ -2,7 +2,7 @@
   "name": "basic-datepicker",
   "description": "Simple No Framework No Nonsense JavaScript Date Picker",
   "main": "./lib/datepicker.js",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "types": "./lib/datepicker.d.js",
   "scripts": {
     "test": "node_modules/.bin/mocha test"
