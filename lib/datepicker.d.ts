@@ -29,16 +29,16 @@ interface Rect {
     right: number;
 }
 declare class DatePicker {
-    protected picker: HTMLInputElement;
+    protected pickerElm: HTMLInputElement;
     offset: number;
     protected calendar: HTMLDivElement;
     protected options: OptionsInterface;
     /**
-     * @param {!Node} picker
+     * @param {!Node} pickerElm
      * @param {?Object} options
      * @constructor
      */
-    constructor(picker: HTMLInputElement, options?: Partial<OptionsInterface>);
+    constructor(pickerElm: HTMLInputElement, options?: Partial<OptionsInterface>);
     protected parseUserDate(input: string): Date | null;
     hide(): void;
     display(): void;
