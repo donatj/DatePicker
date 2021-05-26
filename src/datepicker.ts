@@ -382,24 +382,17 @@ class DatePicker {
 	}
 
 	private pageRect(elm: HTMLElement): Rect {
-		let top = 0;
-		let left = 0;
-
 		const irect = elm.getBoundingClientRect();
 
-		do {
-			top += elm.offsetTop || 0;
-			left += elm.offsetLeft || 0;
-			elm = elm.offsetParent as HTMLElement;
-		} while (elm);
+		const rect = {
+			bottom: irect.y - (irect.top - irect.bottom),
+			top: irect.y,
 
-		return {
-			bottom: top - (irect.top - irect.bottom),
-			top,
-
-			left,
-			right: left - (irect.left - irect.right),
+			left: irect.x,
+			right: irect.x - (irect.left - irect.right),
 		};
+
+		return rect;
 	}
 
 	/**
