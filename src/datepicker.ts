@@ -74,11 +74,11 @@ class DatePicker {
 	};
 
 	/**
-	 * @param {!Node} pickerElm
+	 * @param {!Node} pickerInput
 	 * @param {?Object} options
 	 * @constructor
 	 */
-	constructor(protected pickerElm: HTMLInputElement, options?: Partial<OptionsInterface>) {
+	constructor(protected pickerInput: HTMLInputElement, options?: Partial<OptionsInterface>) {
 		this.options = { ...this.options, ...options };
 
 		this.calendar.className = 'DatePicker';
@@ -90,31 +90,31 @@ class DatePicker {
 		body.appendChild(this.calendar);
 
 		let hideTimeout = 0;
-		this.pickerElm.addEventListener('focus', () => {
+		this.pickerInput.addEventListener('focus', () => {
 			clearTimeout(hideTimeout);
 			this.display();
 		});
 
-		this.pickerElm.addEventListener('blur', () => {
+		this.pickerInput.addEventListener('blur', () => {
 			hideTimeout = setTimeout(this.hide.bind(this), 300);
 		});
 
 		if (this.options.pickerDate !== null) {
 			this.setPickerDate(this.options.pickerDate);
 		} else if (this.options.parseUserInput !== false) {
-			this.setPickerDate(this.pickerElm.value);
+			this.setPickerDate(this.pickerInput.value);
 		}
 
 		if (this.options.parseUserInput) {
 			let wasInput = false;
-			this.pickerElm.addEventListener('input', () => {
+			this.pickerInput.addEventListener('input', () => {
 				wasInput = true;
 			});
 
-			this.pickerElm.addEventListener('change', () => {
+			this.pickerInput.addEventListener('change', () => {
 				if (wasInput) {
 					try {
-						this.setPickerDate(this.pickerElm.value);
+						this.setPickerDate(this.pickerInput.value);
 					} catch{
 						this.setPickerDate(this.options.pickerDate)
 					}
@@ -160,7 +160,7 @@ class DatePicker {
 	}
 
 	public display() {
-		const rect = this.pageRect(this.pickerElm);
+		const rect = this.pageRect(this.pickerInput);
 		const bottom = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
 		this.calendar.style.top = (rect.bottom + this.options.offsetX) + "px";
@@ -207,7 +207,7 @@ class DatePicker {
 		}
 
 		this.options.pickerDate = date;
-		this.pickerElm.value = date ? this.format(date, this.options.outputFormat, this.options.pickerDateUTC) : '';
+		this.pickerInput.value = date ? this.format(date, this.options.outputFormat, this.options.pickerDateUTC) : '';
 
 		if (date) {
 			this.setMonth(this.options.pickerDateUTC ? date.getUTCMonth() : date.getMonth());
@@ -294,7 +294,7 @@ class DatePicker {
 
 		next.addEventListener('click', () => {
 			this.setMonth(this.options.date.getMonth() + 1);
-			this.pickerElm.focus();
+			this.pickerInput.focus();
 		});
 
 		const prev = document.createElement('span');
@@ -304,7 +304,7 @@ class DatePicker {
 
 		prev.addEventListener('click', () => {
 			this.setMonth(this.options.date.getMonth() - 1);
-			this.pickerElm.focus();
+			this.pickerInput.focus();
 		});
 
 		header.appendChild(next);
@@ -344,12 +344,12 @@ class DatePicker {
 				td.addEventListener('click', ((date: Date) => {
 					return () => {
 						this.setPickerDate(date);
-						this.options.onPick.apply(this.pickerElm, [date]);
+						this.options.onPick.apply(this.pickerInput, [date]);
 						if (this.options.triggerChangeEvent) {
-							if (this.pickerElm.dispatchEvent) { // IE9+
+							if (this.pickerInput.dispatchEvent) { // IE9+
 								const evt = document.createEvent("HTMLEvents");
 								evt.initEvent('change', true, true);
-								return !this.pickerElm.dispatchEvent(evt);
+								return !this.pickerInput.dispatchEvent(evt);
 							}
 						}
 
