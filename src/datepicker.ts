@@ -101,6 +101,12 @@ class DatePicker {
 			hideTimeout = setTimeout(this.hide.bind(this), 300);
 		});
 
+		let scrollTimeout = 0;
+		document.addEventListener('scroll', () => {
+			clearTimeout(scrollTimeout);
+			scrollTimeout = setTimeout(this.updatePosition.bind(this), 1000);
+		}, true);
+
 		if (this.options.pickerDate !== null) {
 			this.setPickerDate(this.options.pickerDate);
 		} else if (this.options.parseUserInput !== false) {
@@ -167,18 +173,33 @@ class DatePicker {
 			this.options.parentNode.appendChild(this.calendar);
 		}
 
+		this.updatePosition();
+	}
+
+	private updatePosition() {
+		if (this.calendar.parentNode === null) {
+			return;
+		}
+		
 		const rect = this.pageRect(this.pickerInput);
+
+		const top = Math.max(rect.bottom + this.options.offsetX, 0);
 		const bottom = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
-		this.calendar.style.top = (rect.bottom + this.options.offsetX) + "px";
-		this.calendar.style.left = (rect.left + this.options.offsetY) + "px";
+		this.calendar.style.top = `${top}px`;
+		this.calendar.style.left = `${rect.left + this.options.offsetY}px`;
 		this.calendar.style.display = 'inline-block';
 		this.calendar.style.visibility = 'inherit';
 
-		const calrect = this.calendar.getBoundingClientRect();
+		let calrectPost = this.calendar.getBoundingClientRect();
 
-		if (calrect.bottom > bottom) {
-			this.calendar.style.top = ((rect.top - calrect.height) + this.options.offsetX) + "px";
+		if (calrectPost.bottom > bottom) {
+			this.calendar.style.top = `${(rect.top - calrectPost.height) + this.options.offsetX}px`;
+		}
+
+		calrectPost = this.calendar.getBoundingClientRect();
+		if (calrectPost.bottom > bottom) {
+			this.calendar.style.top = `${bottom - calrectPost.height}px`;
 		}
 	}
 

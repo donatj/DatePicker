@@ -43,6 +43,7 @@ declare class DatePicker {
     protected parseUserDate(input: string): Date | null;
     hide(): void;
     display(): void;
+    private updatePosition;
     private getDaysInMonth;
     /**
      * Set the currently picked date of the picker
