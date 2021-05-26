@@ -28,6 +28,8 @@ interface OptionsInterface {
 	triggerChangeEvent: boolean;
 	offsetX: number;
 	offsetY: number;
+
+	parentNode: HTMLElement;
 }
 
 interface Rect {
@@ -71,6 +73,8 @@ class DatePicker {
 
 		offsetX: 0,
 		offsetY: 0,
+
+		parentNode: document.body,
 	};
 
 	/**
@@ -83,11 +87,9 @@ class DatePicker {
 
 		this.calendar.className = 'DatePicker';
 
-		const body = document.querySelector('body');
-		if (!body) {
-			throw new Error("Failed to find body tag");
+		if (!this.options.parentNode) {
+			throw new Error("Failed to find parent node");
 		}
-		body.appendChild(this.calendar);
 
 		let hideTimeout = 0;
 		this.pickerInput.addEventListener('focus', () => {
@@ -115,7 +117,7 @@ class DatePicker {
 				if (wasInput) {
 					try {
 						this.setPickerDate(this.pickerInput.value);
-					} catch{
+					} catch {
 						this.setPickerDate(this.options.pickerDate)
 					}
 				}
@@ -125,7 +127,6 @@ class DatePicker {
 		}
 
 		this.render();
-		this.hide();
 	}
 
 	protected parseUserDate(input: string): Date | null {
@@ -156,10 +157,16 @@ class DatePicker {
 	}
 
 	public hide() {
-		this.calendar.style.display = 'none';
+		if (this.calendar.parentNode !== null) {
+			this.calendar.parentNode.removeChild(this.calendar);
+		}
 	}
 
 	public display() {
+		if (this.calendar.parentNode === null) {
+			this.options.parentNode.appendChild(this.calendar);
+		}
+
 		const rect = this.pageRect(this.pickerInput);
 		const bottom = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 

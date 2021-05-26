@@ -21,6 +21,7 @@ interface OptionsInterface {
     triggerChangeEvent: boolean;
     offsetX: number;
     offsetY: number;
+    parentNode: HTMLElement;
 }
 interface Rect {
     bottom: number;
