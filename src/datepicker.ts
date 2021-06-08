@@ -414,7 +414,7 @@ class DatePicker {
 	private pageRect(elm: HTMLElement): Rect {
 		const irect = elm.getBoundingClientRect();
 
-		const rect = new class {
+		return new class {
 			public bottom = (irect.y - (irect.top - irect.bottom)) + window.scrollY;
 			public top =  irect.y + window.scrollY;
 
@@ -425,8 +425,6 @@ class DatePicker {
 				return this.bottom - this.top;
 			}
 		}();
-
-		return rect;
 	}
 
 	/**

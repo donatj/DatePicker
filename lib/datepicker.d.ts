@@ -28,6 +28,7 @@ interface Rect {
     top: number;
     left: number;
     right: number;
+    height(): number;
 }
 declare class DatePicker {
     protected pickerInput: HTMLInputElement;
