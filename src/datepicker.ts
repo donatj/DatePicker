@@ -37,6 +37,8 @@ interface Rect {
 	top: number;
 	left: number;
 	right: number;
+
+	height(): number;
 }
 
 class DatePicker {
@@ -181,25 +183,25 @@ class DatePicker {
 			return;
 		}
 		
-		const rect = this.pageRect(this.pickerInput);
-
-		const top = Math.max(rect.bottom + this.options.offsetX, 0);
-		const bottom = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+		const pickerRect = this.pageRect(this.pickerInput);
+		const pageBottom = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) + window.scrollY;
+		const top = Math.max(
+			Math.max(pickerRect.bottom + this.options.offsetX, 0), window.scrollY
+		);
 
 		this.calendar.style.top = `${top}px`;
-		this.calendar.style.left = `${rect.left + this.options.offsetY}px`;
+		this.calendar.style.left = `${pickerRect.left + this.options.offsetY}px`;
 		this.calendar.style.display = 'inline-block';
 		this.calendar.style.visibility = 'inherit';
 
-		let calrectPost = this.calendar.getBoundingClientRect();
-
-		if (calrectPost.bottom > bottom) {
-			this.calendar.style.top = `${(rect.top - calrectPost.height) + this.options.offsetX}px`;
+		let calRect = this.pageRect(this.calendar);
+		if (calRect.bottom > pageBottom) {
+			this.calendar.style.top = `${(pickerRect.top - calRect.height()) + this.options.offsetX}px`;
 		}
 
-		calrectPost = this.calendar.getBoundingClientRect();
-		if (calrectPost.bottom > bottom) {
-			this.calendar.style.top = `${bottom - calrectPost.height}px`;
+		calRect = this.pageRect(this.calendar);
+		if (calRect.bottom > pageBottom) {
+			this.calendar.style.top = `${pageBottom - calRect.height()}px`;
 		}
 	}
 
@@ -412,13 +414,17 @@ class DatePicker {
 	private pageRect(elm: HTMLElement): Rect {
 		const irect = elm.getBoundingClientRect();
 
-		const rect = {
-			bottom: irect.y - (irect.top - irect.bottom),
-			top: irect.y,
+		const rect = new class {
+			public bottom = (irect.y - (irect.top - irect.bottom)) + window.scrollY;
+			public top =  irect.y + window.scrollY;
 
-			left: irect.x,
-			right: irect.x - (irect.left - irect.right),
-		};
+			public left = irect.x - window.scrollX;
+			public right = (irect.x - (irect.left - irect.right)) - window.scrollX;
+
+			public height() : number {
+				return this.bottom - this.top;
+			}
+		}();
 
 		return rect;
 	}
