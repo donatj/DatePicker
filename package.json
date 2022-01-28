@@ -5,7 +5,8 @@
   "version": "0.9.1",
   "types": "./lib/datepicker.d.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha test"
+    "test": "node_modules/.bin/mocha test",
+    "build": "node_modules/.bin/tsc"
   },
   "repository": {
     "type": "git",
