@@ -492,7 +492,7 @@ class DatePicker {
 			
 			const monthName = typeof this.options.months === 'function'
 				? this.options.months(i, 'short')
-				: this.options.months[i].substr(0, 3);
+				: this.options.months[i].substring(0, 3);
 			
 			td.innerHTML = monthName;
 
