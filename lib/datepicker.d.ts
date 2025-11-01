@@ -30,10 +30,12 @@ interface Rect {
     right: number;
     height(): number;
 }
+type PickerView = 'day' | 'month' | 'year';
 declare class DatePicker {
     protected pickerInput: HTMLInputElement;
     offset: number;
     protected calendar: HTMLDivElement;
+    protected currentView: PickerView;
     protected options: OptionsInterface;
     /**
      * @param {!Node} pickerInput
@@ -89,6 +91,9 @@ declare class DatePicker {
      */
     getWorkingDate(): Date;
     private render;
+    private renderDayView;
+    private renderMonthView;
+    private renderYearView;
     private pageRect;
     /**
      * From: http://www.electricprism.com/aeron/calendar/

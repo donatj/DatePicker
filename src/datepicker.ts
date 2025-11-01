@@ -41,11 +41,14 @@ interface Rect {
 	height(): number;
 }
 
+type PickerView = 'day' | 'month' | 'year';
+
 class DatePicker {
 
 	public offset: number = 0;
 
 	protected calendar = document.createElement('div');
+	protected currentView: PickerView = 'day';
 
 	protected options: OptionsInterface = {
 		outputFormat: 'Y-m-d',
@@ -309,11 +312,40 @@ class DatePicker {
 	private render(): void {
 		this.calendar.innerHTML = '';
 
+		if (this.currentView === 'day') {
+			this.renderDayView();
+		} else if (this.currentView === 'month') {
+			this.renderMonthView();
+		} else if (this.currentView === 'year') {
+			this.renderYearView();
+		}
+	}
+
+	private renderDayView(): void {
 		const workingDate = this.getWorkingDate();
 		const header = document.createElement('div');
 		header.className = 'DatePicker-header';
 
-		header.innerHTML = this.format(workingDate, 'F Y', false);
+		const monthSpan = document.createElement('span');
+		monthSpan.className = 'DatePicker-month-label';
+		monthSpan.innerHTML = this.format(workingDate, 'F', false);
+		monthSpan.addEventListener('click', () => {
+			this.currentView = 'month';
+			this.render();
+			this.pickerInput.focus();
+		});
+
+		const yearSpan = document.createElement('span');
+		yearSpan.className = 'DatePicker-year-label';
+		yearSpan.innerHTML = ' ' + this.format(workingDate, 'Y', false);
+		yearSpan.addEventListener('click', () => {
+			this.currentView = 'year';
+			this.render();
+			this.pickerInput.focus();
+		});
+
+		header.appendChild(monthSpan);
+		header.appendChild(yearSpan);
 
 		this.calendar.appendChild(header);
 
@@ -408,7 +440,126 @@ class DatePicker {
 			endTd.innerHTML = '&nbsp;';
 			tr.appendChild(endTd);
 		}
+	}
 
+	private renderMonthView(): void {
+		const workingDate = this.getWorkingDate();
+		const header = document.createElement('div');
+		header.className = 'DatePicker-header';
+
+		const yearSpan = document.createElement('span');
+		yearSpan.className = 'DatePicker-year-label';
+		yearSpan.innerHTML = this.format(workingDate, 'Y', false);
+		yearSpan.addEventListener('click', () => {
+			this.currentView = 'year';
+			this.render();
+			this.pickerInput.focus();
+		});
+
+		header.appendChild(yearSpan);
+		this.calendar.appendChild(header);
+
+		const next = document.createElement('span');
+		next.className = 'DatePicker-next-year';
+		next.innerHTML = this.options.next;
+		next.addEventListener('click', () => {
+			this.setYear(this.options.date.getFullYear() + 1);
+			this.pickerInput.focus();
+		});
+
+		const prev = document.createElement('span');
+		prev.className = 'DatePicker-prev-year';
+		prev.innerHTML = this.options.prev;
+		prev.addEventListener('click', () => {
+			this.setYear(this.options.date.getFullYear() - 1);
+			this.pickerInput.focus();
+		});
+
+		header.appendChild(next);
+		header.appendChild(prev);
+
+		const tbl = document.createElement('table');
+		this.calendar.appendChild(tbl);
+
+		for (let i = 0; i < 12; i++) {
+			if (i % 3 === 0) {
+				const tr = document.createElement('tr');
+				tbl.appendChild(tr);
+			}
+
+			const td = document.createElement('td');
+			td.className = 'DatePicker-month';
+			
+			const monthName = typeof this.options.months === 'function'
+				? this.options.months(i, 'short')
+				: this.options.months[i].substr(0, 3);
+			
+			td.innerHTML = monthName;
+
+			td.addEventListener('click', () => {
+				this.setMonth(i);
+				this.currentView = 'day';
+				this.pickerInput.focus();
+			});
+
+			const lastRow = tbl.lastChild as HTMLTableRowElement;
+			lastRow.appendChild(td);
+		}
+	}
+
+	private renderYearView(): void {
+		const workingDate = this.getWorkingDate();
+		const currentYear = workingDate.getFullYear();
+		const startYear = Math.floor(currentYear / 12) * 12;
+
+		const header = document.createElement('div');
+		header.className = 'DatePicker-header';
+		header.innerHTML = `${startYear} - ${startYear + 11}`;
+
+		this.calendar.appendChild(header);
+
+		const next = document.createElement('span');
+		next.className = 'DatePicker-next-years';
+		next.innerHTML = this.options.next;
+		next.addEventListener('click', () => {
+			this.setYear(this.options.date.getFullYear() + 12);
+			this.pickerInput.focus();
+		});
+
+		const prev = document.createElement('span');
+		prev.className = 'DatePicker-prev-years';
+		prev.innerHTML = this.options.prev;
+		prev.addEventListener('click', () => {
+			this.setYear(this.options.date.getFullYear() - 12);
+			this.pickerInput.focus();
+		});
+
+		header.appendChild(next);
+		header.appendChild(prev);
+
+		const tbl = document.createElement('table');
+		this.calendar.appendChild(tbl);
+
+		for (let i = 0; i < 12; i++) {
+			if (i % 3 === 0) {
+				const tr = document.createElement('tr');
+				tbl.appendChild(tr);
+			}
+
+			const td = document.createElement('td');
+			td.className = 'DatePicker-year';
+			const year = startYear + i;
+			td.innerHTML = year.toString();
+
+			td.addEventListener('click', () => {
+				this.setYear(year);
+				this.currentView = 'month';
+				this.pickerInput.focus();
+			});
+
+			const lastRow = tbl.lastChild as HTMLTableRowElement;
+			lastRow.appendChild(td);
+		}
 	}
 
 	private pageRect(elm: HTMLElement): Rect {
