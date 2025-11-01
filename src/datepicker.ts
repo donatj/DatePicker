@@ -111,6 +111,7 @@ class DatePicker {
 		}, true);
 
 		// Watch for the input being removed from the DOM (fixes Firefox issue)
+		// Observing document.body with subtree:true ensures we catch removal at any level
 		this.mutationObserver = new MutationObserver(() => {
 			if (!document.body.contains(this.pickerInput)) {
 				this.hide();
@@ -120,9 +121,7 @@ class DatePicker {
 				}
 			}
 		});
-		if (this.pickerInput.parentNode) {
-			this.mutationObserver.observe(this.pickerInput.parentNode, { childList: true });
-		}
+		this.mutationObserver.observe(document.body, { childList: true, subtree: true });
 
 		if (this.options.pickerDate !== null) {
 			this.setPickerDate(this.options.pickerDate);

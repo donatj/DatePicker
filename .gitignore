@@ -3,3 +3,5 @@
 /node_modules
 /yarn.lock
 test-dom-removal.html
+test-ancestor-removal.html
+mutation-test.html
