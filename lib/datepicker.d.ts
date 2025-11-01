@@ -34,6 +34,7 @@ declare class DatePicker {
     protected pickerInput: HTMLInputElement;
     offset: number;
     protected calendar: HTMLDivElement;
+    protected mutationObserver: MutationObserver | null;
     protected options: OptionsInterface;
     /**
      * @param {!Node} pickerInput

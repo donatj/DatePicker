@@ -46,6 +46,7 @@ class DatePicker {
 	public offset: number = 0;
 
 	protected calendar = document.createElement('div');
+	protected mutationObserver: MutationObserver | null = null;
 
 	protected options: OptionsInterface = {
 		outputFormat: 'Y-m-d',
@@ -110,14 +111,17 @@ class DatePicker {
 		}, true);
 
 		// Watch for the input being removed from the DOM (fixes Firefox issue)
-		const observer = new MutationObserver(() => {
+		this.mutationObserver = new MutationObserver(() => {
 			if (!document.body.contains(this.pickerInput)) {
 				this.hide();
-				observer.disconnect();
+				if (this.mutationObserver) {
+					this.mutationObserver.disconnect();
+					this.mutationObserver = null;
+				}
 			}
 		});
 		if (this.pickerInput.parentNode) {
-			observer.observe(this.pickerInput.parentNode, { childList: true });
+			this.mutationObserver.observe(this.pickerInput.parentNode, { childList: true });
 		}
 
 		if (this.options.pickerDate !== null) {
