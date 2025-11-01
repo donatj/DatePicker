@@ -109,6 +109,17 @@ class DatePicker {
 			scrollTimeout = setTimeout(this.updatePosition.bind(this), 1000);
 		}, true);
 
+		// Watch for the input being removed from the DOM (fixes Firefox issue)
+		const observer = new MutationObserver(() => {
+			if (!document.body.contains(this.pickerInput)) {
+				this.hide();
+				observer.disconnect();
+			}
+		});
+		if (this.pickerInput.parentNode) {
+			observer.observe(this.pickerInput.parentNode, { childList: true });
+		}
+
 		if (this.options.pickerDate !== null) {
 			this.setPickerDate(this.options.pickerDate);
 		} else if (this.options.parseUserInput !== false) {
