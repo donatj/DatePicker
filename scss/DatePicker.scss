@@ -12,6 +12,14 @@
 		text-align: center;
 	}
 
+	.DatePicker-month-label, .DatePicker-year-label {
+		cursor: pointer;
+		
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
 	td {
 		border-radius: 4px;
 		color: black;
@@ -50,13 +58,35 @@
 		float: left;
 	}
 
-	.DatePicker-next-month, .DatePicker-prev-month {
+	.DatePicker-next-month, .DatePicker-prev-month,
+	.DatePicker-next-year, .DatePicker-prev-year,
+	.DatePicker-next-years, .DatePicker-prev-years {
 		color: #bbb;
 		cursor: pointer;
 		font-size: 14px;
 
 		&:hover {
 			color: #000;
+		}
+	}
+
+	.DatePicker-next-year, .DatePicker-next-years {
+		float: right;
+	}
+
+	.DatePicker-prev-year, .DatePicker-prev-years {
+		float: left;
+	}
+
+	.DatePicker-month, .DatePicker-year {
+		border-color: transparent;
+		text-align: center;
+		cursor: pointer;
+		padding: 8px;
+
+		&:hover {
+			background-color: orange;
+			border-color: darkorange;
 		}
 	}
 }
