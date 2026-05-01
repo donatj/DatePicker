@@ -6,36 +6,75 @@
   padding: 5px;
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.1) 3px 3px 3px;
-  font-family: Arial, monospace; }
-  .DatePicker .DatePicker-header {
-    text-align: center; }
-  .DatePicker td {
-    border-radius: 4px;
-    color: black;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 3px;
-    margin: 1px;
-    font-size: .9em; }
-    .DatePicker td.DatePicker-date {
-      border-color: transparent;
-      text-align: center; }
-      .DatePicker td.DatePicker-date:hover {
-        background-color: orange;
-        border-color: darkorange;
-        cursor: pointer; }
-      .DatePicker td.DatePicker-date.DatePicker-date-disabled {
-        background: transparent;
-        color: #aaa;
-        cursor: auto; }
-        .DatePicker td.DatePicker-date.DatePicker-date-disabled:hover {
-          border-color: transparent; }
-  .DatePicker .DatePicker-next-month {
-    float: right; }
-  .DatePicker .DatePicker-prev-month {
-    float: left; }
-  .DatePicker .DatePicker-next-month, .DatePicker .DatePicker-prev-month {
-    color: #bbb;
-    cursor: pointer;
-    font-size: 14px; }
-    .DatePicker .DatePicker-next-month:hover, .DatePicker .DatePicker-prev-month:hover {
-      color: #000; }
+  font-family: Arial, monospace;
+}
+.DatePicker .DatePicker-header {
+  text-align: center;
+}
+.DatePicker .DatePicker-month-label, .DatePicker .DatePicker-year-label {
+  cursor: pointer;
+}
+.DatePicker .DatePicker-month-label:hover, .DatePicker .DatePicker-year-label:hover {
+  text-decoration: underline;
+}
+.DatePicker td {
+  border-radius: 4px;
+  color: black;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 3px;
+  margin: 1px;
+  font-size: 0.9em;
+}
+.DatePicker td.DatePicker-date {
+  border-color: transparent;
+  text-align: center;
+}
+.DatePicker td.DatePicker-date:hover {
+  background-color: orange;
+  border-color: darkorange;
+  cursor: pointer;
+}
+.DatePicker td.DatePicker-date.DatePicker-date-disabled {
+  background: transparent;
+  color: #aaa;
+  cursor: auto;
+}
+.DatePicker td.DatePicker-date.DatePicker-date-disabled:hover {
+  border-color: transparent;
+}
+.DatePicker .DatePicker-next-month {
+  float: right;
+}
+.DatePicker .DatePicker-prev-month {
+  float: left;
+}
+.DatePicker .DatePicker-next-month, .DatePicker .DatePicker-prev-month,
+.DatePicker .DatePicker-next-year, .DatePicker .DatePicker-prev-year,
+.DatePicker .DatePicker-next-years, .DatePicker .DatePicker-prev-years {
+  color: #bbb;
+  cursor: pointer;
+  font-size: 14px;
+}
+.DatePicker .DatePicker-next-month:hover, .DatePicker .DatePicker-prev-month:hover,
+.DatePicker .DatePicker-next-year:hover, .DatePicker .DatePicker-prev-year:hover,
+.DatePicker .DatePicker-next-years:hover, .DatePicker .DatePicker-prev-years:hover {
+  color: #000;
+}
+.DatePicker .DatePicker-next-year, .DatePicker .DatePicker-next-years {
+  float: right;
+}
+.DatePicker .DatePicker-prev-year, .DatePicker .DatePicker-prev-years {
+  float: left;
+}
+.DatePicker .DatePicker-month, .DatePicker .DatePicker-year {
+  border-color: transparent;
+  text-align: center;
+  cursor: pointer;
+  padding: 8px;
+}
+.DatePicker .DatePicker-month:hover, .DatePicker .DatePicker-year:hover {
+  background-color: orange;
+  border-color: darkorange;
+}
+
+/*# sourceMappingURL=DatePicker.css.map */
