@@ -36,6 +36,7 @@ declare class DatePicker {
     offset: number;
     protected calendar: HTMLDivElement;
     protected currentView: PickerView;
+    protected hideTimeout: number;
     protected options: OptionsInterface;
     /**
      * @param {!Node} pickerInput
@@ -46,6 +47,7 @@ declare class DatePicker {
     protected parseUserDate(input: string): Date | null;
     hide(): void;
     display(): void;
+    private scheduleHide;
     private updatePosition;
     private getDaysInMonth;
     /**
@@ -91,6 +93,7 @@ declare class DatePicker {
      */
     getWorkingDate(): Date;
     private render;
+    private createButton;
     private renderDayView;
     private renderMonthView;
     private renderYearView;

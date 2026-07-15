@@ -11,11 +11,25 @@
 .DatePicker .DatePicker-header {
   text-align: center;
 }
+.DatePicker .DatePicker-month-label, .DatePicker .DatePicker-year-label,
+.DatePicker .DatePicker-next-month, .DatePicker .DatePicker-prev-month,
+.DatePicker .DatePicker-next-year, .DatePicker .DatePicker-prev-year,
+.DatePicker .DatePicker-next-years, .DatePicker .DatePicker-prev-years,
+.DatePicker .DatePicker-month, .DatePicker .DatePicker-year {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+}
 .DatePicker .DatePicker-month-label, .DatePicker .DatePicker-year-label {
   cursor: pointer;
+  padding: 0;
 }
-.DatePicker .DatePicker-month-label:hover, .DatePicker .DatePicker-year-label:hover {
+.DatePicker .DatePicker-month-label:hover, .DatePicker .DatePicker-year-label:hover, .DatePicker .DatePicker-month-label:focus, .DatePicker .DatePicker-year-label:focus {
   text-decoration: underline;
+}
+.DatePicker .DatePicker-year-label {
+  margin-left: 0.25em;
 }
 .DatePicker td {
   border-radius: 4px;
@@ -54,10 +68,14 @@
   color: #bbb;
   cursor: pointer;
   font-size: 14px;
+  padding: 0;
 }
 .DatePicker .DatePicker-next-month:hover, .DatePicker .DatePicker-prev-month:hover,
 .DatePicker .DatePicker-next-year:hover, .DatePicker .DatePicker-prev-year:hover,
-.DatePicker .DatePicker-next-years:hover, .DatePicker .DatePicker-prev-years:hover {
+.DatePicker .DatePicker-next-years:hover, .DatePicker .DatePicker-prev-years:hover,
+.DatePicker .DatePicker-next-month:focus, .DatePicker .DatePicker-prev-month:focus,
+.DatePicker .DatePicker-next-year:focus, .DatePicker .DatePicker-prev-year:focus,
+.DatePicker .DatePicker-next-years:focus, .DatePicker .DatePicker-prev-years:focus {
   color: #000;
 }
 .DatePicker .DatePicker-next-year, .DatePicker .DatePicker-next-years {
@@ -66,13 +84,19 @@
 .DatePicker .DatePicker-prev-year, .DatePicker .DatePicker-prev-years {
   float: left;
 }
+.DatePicker .DatePicker-month-cell, .DatePicker .DatePicker-year-cell {
+  border-color: transparent;
+  padding: 0;
+}
 .DatePicker .DatePicker-month, .DatePicker .DatePicker-year {
   border-color: transparent;
+  display: block;
   text-align: center;
   cursor: pointer;
   padding: 8px;
+  width: 100%;
 }
-.DatePicker .DatePicker-month:hover, .DatePicker .DatePicker-year:hover {
+.DatePicker .DatePicker-month:hover, .DatePicker .DatePicker-year:hover, .DatePicker .DatePicker-month:focus, .DatePicker .DatePicker-year:focus {
   background-color: orange;
   border-color: darkorange;
 }

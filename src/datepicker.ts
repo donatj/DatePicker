@@ -49,6 +49,7 @@ class DatePicker {
 
 	protected calendar = document.createElement('div');
 	protected currentView: PickerView = 'day';
+	protected hideTimeout = 0;
 
 	protected options: OptionsInterface = {
 		outputFormat: 'Y-m-d',
@@ -96,14 +97,21 @@ class DatePicker {
 			throw new Error("Failed to find parent node");
 		}
 
-		let hideTimeout = 0;
 		this.pickerInput.addEventListener('focus', () => {
-			clearTimeout(hideTimeout);
+			clearTimeout(this.hideTimeout);
 			this.display();
 		});
 
 		this.pickerInput.addEventListener('blur', () => {
-			hideTimeout = setTimeout(this.hide.bind(this), 300);
+			this.scheduleHide();
+		});
+
+		this.calendar.addEventListener('focusin', () => {
+			clearTimeout(this.hideTimeout);
+		});
+
+		this.calendar.addEventListener('focusout', () => {
+			this.scheduleHide();
 		});
 
 		let scrollTimeout = 0;
@@ -175,10 +183,22 @@ class DatePicker {
 
 	public display() {
 		if (this.calendar.parentNode === null) {
+			this.currentView = 'day';
 			this.options.parentNode.appendChild(this.calendar);
+			this.render();
 		}
 
 		this.updatePosition();
+	}
+
+	private scheduleHide(): void {
+		clearTimeout(this.hideTimeout);
+		this.hideTimeout = window.setTimeout(() => {
+			const activeElement = document.activeElement;
+			if (activeElement !== this.pickerInput && (activeElement === null || !this.calendar.contains(activeElement))) {
+				this.hide();
+			}
+		}, 300);
 	}
 
 	private updatePosition() {
@@ -319,6 +339,20 @@ class DatePicker {
 		} else if (this.currentView === 'year') {
 			this.renderYearView();
 		}
+
+		this.updatePosition();
+	}
+
+	private createButton(className: string, text: string, onClick: () => void, ariaLabel?: string): HTMLButtonElement {
+		const button = document.createElement('button');
+		button.type = 'button';
+		button.className = className;
+		button.textContent = text;
+		if (ariaLabel) {
+			button.setAttribute('aria-label', ariaLabel);
+		}
+		button.addEventListener('click', onClick);
+		return button;
 	}
 
 	private renderDayView(): void {
@@ -326,48 +360,42 @@ class DatePicker {
 		const header = document.createElement('div');
 		header.className = 'DatePicker-header';
 
-		const monthSpan = document.createElement('span');
-		monthSpan.className = 'DatePicker-month-label';
-		monthSpan.innerHTML = this.format(workingDate, 'F', false);
-		monthSpan.addEventListener('click', () => {
-			this.currentView = 'month';
-			this.render();
-			this.pickerInput.focus();
-		});
+		const monthButton = this.createButton(
+			'DatePicker-month-label',
+			this.format(workingDate, 'F', false),
+			() => {
+				this.currentView = 'month';
+				this.render();
+				this.pickerInput.focus();
+			},
+			'Choose month'
+		);
 
-		const yearSpan = document.createElement('span');
-		yearSpan.className = 'DatePicker-year-label';
-		yearSpan.innerHTML = ' ' + this.format(workingDate, 'Y', false);
-		yearSpan.addEventListener('click', () => {
-			this.currentView = 'year';
-			this.render();
-			this.pickerInput.focus();
-		});
+		const yearButton = this.createButton(
+			'DatePicker-year-label',
+			this.format(workingDate, 'Y', false),
+			() => {
+				this.currentView = 'year';
+				this.render();
+				this.pickerInput.focus();
+			},
+			'Choose year'
+		);
 
-		header.appendChild(monthSpan);
-		header.appendChild(yearSpan);
+		header.appendChild(monthButton);
+		header.appendChild(yearButton);
 
 		this.calendar.appendChild(header);
 
-		const next = document.createElement('span');
-
-		next.className = 'DatePicker-next-month';
-		next.innerHTML = this.options.next;
-
-		next.addEventListener('click', () => {
+		const next = this.createButton('DatePicker-next-month', this.options.next, () => {
 			this.setMonth(this.options.date.getMonth() + 1);
 			this.pickerInput.focus();
-		});
+		}, 'Next month');
 
-		const prev = document.createElement('span');
-
-		prev.className = 'DatePicker-prev-month';
-		prev.innerHTML = this.options.prev;
-
-		prev.addEventListener('click', () => {
+		const prev = this.createButton('DatePicker-prev-month', this.options.prev, () => {
 			this.setMonth(this.options.date.getMonth() - 1);
 			this.pickerInput.focus();
-		});
+		}, 'Previous month');
 
 		header.appendChild(next);
 		header.appendChild(prev);
@@ -447,33 +475,29 @@ class DatePicker {
 		const header = document.createElement('div');
 		header.className = 'DatePicker-header';
 
-		const yearSpan = document.createElement('span');
-		yearSpan.className = 'DatePicker-year-label';
-		yearSpan.innerHTML = this.format(workingDate, 'Y', false);
-		yearSpan.addEventListener('click', () => {
-			this.currentView = 'year';
-			this.render();
-			this.pickerInput.focus();
-		});
+		const yearButton = this.createButton(
+			'DatePicker-year-label',
+			this.format(workingDate, 'Y', false),
+			() => {
+				this.currentView = 'year';
+				this.render();
+				this.pickerInput.focus();
+			},
+			'Choose year'
+		);
 
-		header.appendChild(yearSpan);
+		header.appendChild(yearButton);
 		this.calendar.appendChild(header);
 
-		const next = document.createElement('span');
-		next.className = 'DatePicker-next-year';
-		next.innerHTML = this.options.next;
-		next.addEventListener('click', () => {
+		const next = this.createButton('DatePicker-next-year', this.options.next, () => {
 			this.setYear(this.options.date.getFullYear() + 1);
 			this.pickerInput.focus();
-		});
+		}, 'Next year');
 
-		const prev = document.createElement('span');
-		prev.className = 'DatePicker-prev-year';
-		prev.innerHTML = this.options.prev;
-		prev.addEventListener('click', () => {
+		const prev = this.createButton('DatePicker-prev-year', this.options.prev, () => {
 			this.setYear(this.options.date.getFullYear() - 1);
 			this.pickerInput.focus();
-		});
+		}, 'Previous year');
 
 		header.appendChild(next);
 		header.appendChild(prev);
@@ -488,19 +512,19 @@ class DatePicker {
 			}
 
 			const td = document.createElement('td');
-			td.className = 'DatePicker-month';
+			td.className = 'DatePicker-month-cell';
 			
 			const monthName = typeof this.options.months === 'function'
 				? this.options.months(i, 'short')
 				: this.options.months[i].substring(0, 3);
 			
-			td.innerHTML = monthName;
-
-			td.addEventListener('click', () => {
-				this.setMonth(i);
+			const button = this.createButton('DatePicker-month', monthName, () => {
 				this.currentView = 'day';
+				this.setMonth(i);
 				this.pickerInput.focus();
-			});
+			}, `Choose ${this.format(new Date(workingDate.getFullYear(), i, 1), 'F', false)}`);
+
+			td.appendChild(button);
 
 			const lastRow = tbl.lastChild as HTMLTableRowElement;
 			lastRow.appendChild(td);
@@ -518,21 +542,15 @@ class DatePicker {
 
 		this.calendar.appendChild(header);
 
-		const next = document.createElement('span');
-		next.className = 'DatePicker-next-years';
-		next.innerHTML = this.options.next;
-		next.addEventListener('click', () => {
+		const next = this.createButton('DatePicker-next-years', this.options.next, () => {
 			this.setYear(this.options.date.getFullYear() + 12);
 			this.pickerInput.focus();
-		});
+		}, 'Next 12 years');
 
-		const prev = document.createElement('span');
-		prev.className = 'DatePicker-prev-years';
-		prev.innerHTML = this.options.prev;
-		prev.addEventListener('click', () => {
+		const prev = this.createButton('DatePicker-prev-years', this.options.prev, () => {
 			this.setYear(this.options.date.getFullYear() - 12);
 			this.pickerInput.focus();
-		});
+		}, 'Previous 12 years');
 
 		header.appendChild(next);
 		header.appendChild(prev);
@@ -547,15 +565,16 @@ class DatePicker {
 			}
 
 			const td = document.createElement('td');
-			td.className = 'DatePicker-year';
+			td.className = 'DatePicker-year-cell';
 			const year = startYear + i;
-			td.innerHTML = year.toString();
 
-			td.addEventListener('click', () => {
-				this.setYear(year);
+			const button = this.createButton('DatePicker-year', year.toString(), () => {
 				this.currentView = 'month';
+				this.setYear(year);
 				this.pickerInput.focus();
-			});
+			}, `Choose ${year}`);
+
+			td.appendChild(button);
 
 			const lastRow = tbl.lastChild as HTMLTableRowElement;
 			lastRow.appendChild(td);
