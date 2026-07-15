@@ -5,6 +5,7 @@ type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
 type DayPickerCallback = (day: number, format: "long" | "short") => string;
 type MonthPickerCallback = (month: number, format: "long" | "short") => string;
 type UserInputParserCallback = (input: string) => Date | null;
+declare const HIDE_DELAY_MS = 300;
 interface OptionsInterface {
     outputFormat: string;
     days: string[] | DayPickerCallback;

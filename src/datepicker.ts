@@ -6,6 +6,7 @@ type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
 type DayPickerCallback = (day: number, format: "long" | "short") => string;
 type MonthPickerCallback = (month: number, format: "long" | "short") => string;
 type UserInputParserCallback = (input: string) => Date | null;
+const HIDE_DELAY_MS = 300;
 
 interface OptionsInterface {
 	outputFormat: string;
@@ -198,7 +199,7 @@ class DatePicker {
 			if (activeElement !== this.pickerInput && (activeElement === null || !this.calendar.contains(activeElement))) {
 				this.hide();
 			}
-		}, 300);
+		}, HIDE_DELAY_MS);
 	}
 
 	private updatePosition() {
@@ -527,13 +528,16 @@ class DatePicker {
 			const monthName = typeof this.options.months === 'function'
 				? this.options.months(i, 'short')
 				: this.options.months[i].substring(0, 3);
+			const monthLabel = typeof this.options.months === 'function'
+				? this.options.months(i, 'long')
+				: this.options.months[i];
 			
 			const button = this.createButton('DatePicker-month', monthName, () => {
 				this.updateMonth(i);
 				this.currentView = 'day';
 				this.render();
 				this.pickerInput.focus();
-			}, `Choose ${this.format(new Date(workingDate.getFullYear(), i, 1), 'F', false)}`);
+			}, `Choose ${monthLabel}`);
 
 			td.appendChild(button);
 
