@@ -1,4 +1,9 @@
-"use strict";
+/*!
+ * Copyright (c) Jesse G. Donat and contributors.
+ * Licensed under the MIT License.
+ *
+ * This notice may not be removed or altered from any source distribution.
+ */
 
 declare var module: { exports: any };
 
@@ -6,6 +11,7 @@ type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
 type DayPickerCallback = (day: number, format: "long" | "short") => string;
 type MonthPickerCallback = (month: number, format: "long" | "short") => string;
 type UserInputParserCallback = (input: string) => Date | null;
+const HIDE_DELAY_MS = 300;
 
 interface OptionsInterface {
 	outputFormat: string;
@@ -41,11 +47,53 @@ interface Rect {
 	height(): number;
 }
 
+type PickerView = 'day' | 'month' | 'year';
+
+function createButton(className: string, text: string, onClick: () => void, ariaLabel?: string): HTMLButtonElement {
+	const button = document.createElement('button');
+	button.type = 'button';
+	button.className = className;
+	button.textContent = text;
+	if (ariaLabel) {
+		button.setAttribute('aria-label', ariaLabel);
+	}
+	button.addEventListener('click', onClick);
+	return button;
+}
+
+function getDaysInMonth(date: Date): number {
+	for (let i = 27; i <= 32; i++) {
+		const workingDate = new Date(date.getFullYear(), date.getMonth(), i);
+		if (workingDate.getMonth() !== date.getMonth()) {
+			return i - 1;
+		}
+	}
+
+	throw new Error("Days in Month Unknown!");
+}
+
+function pageRect(elm: HTMLElement): Rect {
+	const irect = elm.getBoundingClientRect();
+
+	return new class {
+		public bottom = irect.bottom + window.scrollY;
+		public top =  irect.y + window.scrollY;
+
+		public left = irect.x - window.scrollX;
+		public right = irect.right - window.scrollX;
+
+		public height() : number {
+			return this.bottom - this.top;
+		}
+	}();
+}
+
 class DatePicker {
 
 	public offset: number = 0;
 
 	protected calendar = document.createElement('div');
+	protected hideTimeout = 0;
 
 	protected options: OptionsInterface = {
 		outputFormat: 'Y-m-d',
@@ -93,14 +141,21 @@ class DatePicker {
 			throw new Error("Failed to find parent node");
 		}
 
-		let hideTimeout = 0;
 		this.pickerInput.addEventListener('focus', () => {
-			clearTimeout(hideTimeout);
+			clearTimeout(this.hideTimeout);
 			this.display();
 		});
 
 		this.pickerInput.addEventListener('blur', () => {
-			hideTimeout = setTimeout(this.hide.bind(this), 300);
+			this.scheduleHide();
+		});
+
+		this.calendar.addEventListener('focusin', () => {
+			clearTimeout(this.hideTimeout);
+		});
+
+		this.calendar.addEventListener('focusout', () => {
+			this.scheduleHide();
 		});
 
 		let scrollTimeout = 0;
@@ -134,7 +189,7 @@ class DatePicker {
 			});
 		}
 
-		this.render();
+		this.render('day');
 	}
 
 	protected parseUserDate(input: string): Date | null {
@@ -172,18 +227,29 @@ class DatePicker {
 
 	public display() {
 		if (this.calendar.parentNode === null) {
+			this.render('day');
 			this.options.parentNode.appendChild(this.calendar);
 		}
 
 		this.updatePosition();
 	}
 
+	private scheduleHide(): void {
+		clearTimeout(this.hideTimeout);
+		this.hideTimeout = window.setTimeout(() => {
+			const activeElement = document.activeElement;
+			if (activeElement !== this.pickerInput && (activeElement === null || !this.calendar.contains(activeElement))) {
+				this.hide();
+			}
+		}, HIDE_DELAY_MS);
+	}
+
 	private updatePosition() {
 		if (this.calendar.parentNode === null) {
 			return;
 		}
-		
-		const pickerRect = this.pageRect(this.pickerInput);
+
+		const pickerRect = pageRect(this.pickerInput);
 		const pageBottom = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) + window.scrollY;
 		const top = Math.max(
 			Math.max(pickerRect.bottom + this.options.offsetX, 0), window.scrollY
@@ -194,26 +260,23 @@ class DatePicker {
 		this.calendar.style.display = 'inline-block';
 		this.calendar.style.visibility = 'inherit';
 
-		let calRect = this.pageRect(this.calendar);
+		let calRect = pageRect(this.calendar);
 		if (calRect.bottom > pageBottom) {
 			this.calendar.style.top = `${(pickerRect.top - calRect.height()) + this.options.offsetX}px`;
 		}
 
-		calRect = this.pageRect(this.calendar);
+		calRect = pageRect(this.calendar);
 		if (calRect.bottom > pageBottom) {
 			this.calendar.style.top = `${pageBottom - calRect.height()}px`;
 		}
 	}
 
-	private getDaysInMonth(date: Date): number {
-		for (let i = 27; i <= 32; i++) {
-			const workingDate = new Date(date.getFullYear(), date.getMonth(), i);
-			if (workingDate.getMonth() != date.getMonth()) {
-				return i - 1;
-			}
-		}
+	private getDateMonth(date: Date): number {
+		return this.options.pickerDateUTC ? date.getUTCMonth() : date.getMonth();
+	}
 
-		throw new Error("Days in Month Unknown!");
+	private getDateYear(date: Date): number {
+		return this.options.pickerDateUTC ? date.getUTCFullYear() : date.getFullYear();
 	}
 
 	/**
@@ -240,9 +303,11 @@ class DatePicker {
 		this.pickerInput.value = date ? this.format(date, this.options.outputFormat, this.options.pickerDateUTC) : '';
 
 		if (date) {
-			this.setMonth(this.options.pickerDateUTC ? date.getUTCMonth() : date.getMonth());
-			this.setYear(this.options.pickerDateUTC ? date.getUTCFullYear() : date.getFullYear());
+			this.updateMonth(this.getDateMonth(date));
+			this.updateYear(this.getDateYear(date));
 		}
+
+		this.render('day');
 	}
 
 	/**
@@ -260,8 +325,8 @@ class DatePicker {
 	 * @param {!number} month
 	 */
 	public setMonth(month: number): void {
-		this.options.date.setMonth(month);
-		this.render();
+		this.updateMonth(month);
+		this.render('day');
 	}
 
 	/**
@@ -270,8 +335,16 @@ class DatePicker {
 	 * @param {!number} year
 	 */
 	public setYear(year: number): void {
+		this.updateYear(year);
+		this.render('day');
+	}
+
+	private updateMonth(month: number): void {
+		this.options.date.setMonth(month);
+	}
+
+	private updateYear(year: number): void {
 		this.options.date.setFullYear(year);
-		this.render();
 	}
 
 	/**
@@ -279,7 +352,7 @@ class DatePicker {
 	 */
 	public setMinDate(date: Date | null): void {
 		this.options.minDate = date;
-		this.render();
+		this.render('day');
 	}
 
 	/**
@@ -287,7 +360,7 @@ class DatePicker {
 	 */
 	public setMaxDate(date: Date | null): void {
 		this.options.maxDate = date;
-		this.render();
+		this.render('day');
 	}
 
 	/**
@@ -306,36 +379,61 @@ class DatePicker {
 		return (new Date(this.options.date.getFullYear(), this.options.date.getMonth(), 1));
 	}
 
-	private render(): void {
+	private render(view: PickerView): void {
 		this.calendar.innerHTML = '';
 
+		if (view === 'day') {
+			this.renderDayView();
+		} else if (view === 'month') {
+			this.renderMonthView();
+		} else if (view === 'year') {
+			this.renderYearView();
+		}
+
+		this.updatePosition();
+	}
+
+	private renderDayView(): void {
 		const workingDate = this.getWorkingDate();
 		const header = document.createElement('div');
 		header.className = 'DatePicker-header';
 
-		header.innerHTML = this.format(workingDate, 'F Y', false);
+		const monthButton = createButton(
+			'DatePicker-month-label',
+			this.format(workingDate, 'F', false),
+			() => {
+				this.render('month');
+				this.pickerInput.focus();
+			},
+			'Choose month'
+		);
+
+		const yearButton = createButton(
+			'DatePicker-year-label',
+			this.format(workingDate, 'Y', false),
+			() => {
+				this.render('year');
+				this.pickerInput.focus();
+			},
+			'Choose year'
+		);
+
+		header.appendChild(monthButton);
+		header.appendChild(yearButton);
 
 		this.calendar.appendChild(header);
 
-		const next = document.createElement('span');
-
-		next.className = 'DatePicker-next-month';
-		next.innerHTML = this.options.next;
-
-		next.addEventListener('click', () => {
-			this.setMonth(this.options.date.getMonth() + 1);
+		const next = createButton('DatePicker-next-month', this.options.next, () => {
+			this.updateMonth(this.options.date.getMonth() + 1);
+			this.render('day');
 			this.pickerInput.focus();
-		});
+		}, 'Next month');
 
-		const prev = document.createElement('span');
-
-		prev.className = 'DatePicker-prev-month';
-		prev.innerHTML = this.options.prev;
-
-		prev.addEventListener('click', () => {
-			this.setMonth(this.options.date.getMonth() - 1);
+		const prev = createButton('DatePicker-prev-month', this.options.prev, () => {
+			this.updateMonth(this.options.date.getMonth() - 1);
+			this.render('day');
 			this.pickerInput.focus();
-		});
+		}, 'Previous month');
 
 		header.appendChild(next);
 		header.appendChild(prev);
@@ -357,7 +455,7 @@ class DatePicker {
 			tr.appendChild(startTd);
 		}
 
-		for (let i = 1; i <= this.getDaysInMonth(this.options.date); i++) {
+		for (let i = 1; i <= getDaysInMonth(this.options.date); i++) {
 			const td = document.createElement('td');
 			td.innerHTML = i.toString();
 			td.className = 'DatePicker-date';
@@ -408,26 +506,126 @@ class DatePicker {
 			endTd.innerHTML = '&nbsp;';
 			tr.appendChild(endTd);
 		}
-
 	}
 
-	private pageRect(elm: HTMLElement): Rect {
-		const irect = elm.getBoundingClientRect();
+	private renderMonthView(): void {
+		const workingDate = this.getWorkingDate();
+		const header = document.createElement('div');
+		header.className = 'DatePicker-header';
 
-		return new class {
-			public bottom = (irect.y - (irect.top - irect.bottom)) + window.scrollY;
-			public top =  irect.y + window.scrollY;
+		const yearButton = createButton(
+			'DatePicker-year-label',
+			this.format(workingDate, 'Y', false),
+			() => {
+				this.render('year');
+				this.pickerInput.focus();
+			},
+			'Choose year'
+		);
 
-			public left = irect.x - window.scrollX;
-			public right = (irect.x - (irect.left - irect.right)) - window.scrollX;
+		header.appendChild(yearButton);
+		this.calendar.appendChild(header);
 
-			public height() : number {
-				return this.bottom - this.top;
+		const next = createButton('DatePicker-next-year', this.options.next, () => {
+			this.updateYear(this.options.date.getFullYear() + 1);
+			this.render('month');
+			this.pickerInput.focus();
+		}, 'Next year');
+
+		const prev = createButton('DatePicker-prev-year', this.options.prev, () => {
+			this.updateYear(this.options.date.getFullYear() - 1);
+			this.render('month');
+			this.pickerInput.focus();
+		}, 'Previous year');
+
+		header.appendChild(next);
+		header.appendChild(prev);
+
+		const tbl = document.createElement('table');
+		this.calendar.appendChild(tbl);
+
+		for (let i = 0; i < 12; i++) {
+			if (i % 3 === 0) {
+				const tr = document.createElement('tr');
+				tbl.appendChild(tr);
 			}
-		}();
+
+			const td = document.createElement('td');
+			td.className = 'DatePicker-month-cell';
+
+			const monthName = typeof this.options.months === 'function'
+				? this.options.months(i, 'short')
+				: this.options.months[i].substring(0, 3);
+			const monthLabel = typeof this.options.months === 'function'
+				? this.options.months(i, 'long')
+				: this.options.months[i];
+
+			const button = createButton('DatePicker-month-button', monthName, () => {
+				this.updateMonth(i);
+				this.render('day');
+				this.pickerInput.focus();
+			}, `Choose ${monthLabel}`);
+
+			td.appendChild(button);
+
+			const lastRow = tbl.lastChild as HTMLTableRowElement;
+			lastRow.appendChild(td);
+		}
 	}
 
-	/**
+	private renderYearView(): void {
+		const workingDate = this.getWorkingDate();
+		const currentYear = workingDate.getFullYear();
+		const startYear = Math.floor(currentYear / 12) * 12;
+
+		const header = document.createElement('div');
+		header.className = 'DatePicker-header';
+		header.innerHTML = `${startYear} - ${startYear + 11}`;
+
+		this.calendar.appendChild(header);
+
+		const next = createButton('DatePicker-next-years', this.options.next, () => {
+			this.updateYear(this.options.date.getFullYear() + 12);
+			this.render('year');
+			this.pickerInput.focus();
+		}, 'Next 12 years');
+
+		const prev = createButton('DatePicker-prev-years', this.options.prev, () => {
+			this.updateYear(this.options.date.getFullYear() - 12);
+			this.render('year');
+			this.pickerInput.focus();
+		}, 'Previous 12 years');
+
+		header.appendChild(next);
+		header.appendChild(prev);
+
+		const tbl = document.createElement('table');
+		this.calendar.appendChild(tbl);
+
+		for (let i = 0; i < 12; i++) {
+			if (i % 3 === 0) {
+				const tr = document.createElement('tr');
+				tbl.appendChild(tr);
+			}
+
+			const td = document.createElement('td');
+			td.className = 'DatePicker-year-cell';
+			const year = startYear + i;
+
+			const button = createButton('DatePicker-year-button', year.toString(), () => {
+				this.updateYear(year);
+				this.render('month');
+				this.pickerInput.focus();
+			}, `Choose ${year}`);
+
+			td.appendChild(button);
+
+			const lastRow = tbl.lastChild as HTMLTableRowElement;
+			lastRow.appendChild(td);
+		}
+	}
+
+	/*!
 	 * From: http://www.electricprism.com/aeron/calendar/
 	 *
 	 * License:

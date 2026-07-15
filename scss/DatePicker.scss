@@ -12,6 +12,30 @@
 		text-align: center;
 	}
 
+	.DatePicker-month-label, .DatePicker-year-label,
+	.DatePicker-next-month, .DatePicker-prev-month,
+	.DatePicker-next-year, .DatePicker-prev-year,
+	.DatePicker-next-years, .DatePicker-prev-years,
+	.DatePicker-month-button, .DatePicker-year-button {
+		background: transparent;
+		border: 0;
+		color: inherit;
+		font: inherit;
+	}
+
+	.DatePicker-month-label, .DatePicker-year-label {
+		cursor: pointer;
+		padding: 0;
+		
+		&:hover, &:focus {
+			text-decoration: underline;
+		}
+	}
+
+	.DatePicker-year-label {
+		margin-left: .25em;
+	}
+
 	td {
 		border-radius: 4px;
 		color: black;
@@ -50,13 +74,43 @@
 		float: left;
 	}
 
-	.DatePicker-next-month, .DatePicker-prev-month {
+	.DatePicker-next-month, .DatePicker-prev-month,
+	.DatePicker-next-year, .DatePicker-prev-year,
+	.DatePicker-next-years, .DatePicker-prev-years {
 		color: #bbb;
 		cursor: pointer;
 		font-size: 14px;
+		padding: 0;
 
-		&:hover {
+		&:hover, &:focus {
 			color: #000;
+		}
+	}
+
+	.DatePicker-next-year, .DatePicker-next-years {
+		float: right;
+	}
+
+	.DatePicker-prev-year, .DatePicker-prev-years {
+		float: left;
+	}
+
+	.DatePicker-month-cell, .DatePicker-year-cell {
+		border-color: transparent;
+		padding: 0;
+	}
+
+	.DatePicker-month-button, .DatePicker-year-button {
+		border-color: transparent;
+		display: block;
+		text-align: center;
+		cursor: pointer;
+		padding: 8px;
+		width: 100%;
+
+		&:hover, &:focus {
+			background-color: orange;
+			border-color: darkorange;
 		}
 	}
 }

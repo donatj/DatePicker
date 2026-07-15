@@ -1,10 +1,17 @@
+/*!
+ * Copyright (c) Jesse G. Donat and contributors.
+ * Licensed under the MIT License.
+ *
+ * This notice may not be removed or altered from any source distribution.
+ */
 declare var module: {
     exports: any;
 };
-declare type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
-declare type DayPickerCallback = (day: number, format: "long" | "short") => string;
-declare type MonthPickerCallback = (month: number, format: "long" | "short") => string;
-declare type UserInputParserCallback = (input: string) => Date | null;
+type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
+type DayPickerCallback = (day: number, format: "long" | "short") => string;
+type MonthPickerCallback = (month: number, format: "long" | "short") => string;
+type UserInputParserCallback = (input: string) => Date | null;
+declare const HIDE_DELAY_MS = 300;
 interface OptionsInterface {
     outputFormat: string;
     days: string[] | DayPickerCallback;
@@ -30,10 +37,15 @@ interface Rect {
     right: number;
     height(): number;
 }
+type PickerView = 'day' | 'month' | 'year';
+declare function createButton(className: string, text: string, onClick: () => void, ariaLabel?: string): HTMLButtonElement;
+declare function getDaysInMonth(date: Date): number;
+declare function pageRect(elm: HTMLElement): Rect;
 declare class DatePicker {
     protected pickerInput: HTMLInputElement;
     offset: number;
     protected calendar: HTMLDivElement;
+    protected hideTimeout: number;
     protected options: OptionsInterface;
     /**
      * @param {!Node} pickerInput
@@ -44,8 +56,10 @@ declare class DatePicker {
     protected parseUserDate(input: string): Date | null;
     hide(): void;
     display(): void;
+    private scheduleHide;
     private updatePosition;
-    private getDaysInMonth;
+    private getDateMonth;
+    private getDateYear;
     /**
      * Set the currently picked date of the picker
      *
@@ -70,6 +84,8 @@ declare class DatePicker {
      * @param {!number} year
      */
     setYear(year: number): void;
+    private updateMonth;
+    private updateYear;
     /**
      * @param {?Date} date
      */
@@ -89,8 +105,10 @@ declare class DatePicker {
      */
     getWorkingDate(): Date;
     private render;
-    private pageRect;
-    /**
+    private renderDayView;
+    private renderMonthView;
+    private renderYearView;
+    /*!
      * From: http://www.electricprism.com/aeron/calendar/
      *
      * License:
