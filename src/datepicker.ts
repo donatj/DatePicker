@@ -184,7 +184,7 @@ class DatePicker {
 			});
 		}
 
-		this.render();
+		this.render('day');
 	}
 
 	protected parseUserDate(input: string): Date | null {
@@ -302,7 +302,7 @@ class DatePicker {
 			this.updateYear(this.getDateYear(date));
 		}
 
-		this.render();
+		this.render('day');
 	}
 
 	/**
@@ -321,7 +321,7 @@ class DatePicker {
 	 */
 	public setMonth(month: number): void {
 		this.updateMonth(month);
-		this.render();
+		this.render('day');
 	}
 
 	/**
@@ -331,7 +331,7 @@ class DatePicker {
 	 */
 	public setYear(year: number): void {
 		this.updateYear(year);
-		this.render();
+		this.render('day');
 	}
 
 	private updateMonth(month: number): void {
@@ -347,7 +347,7 @@ class DatePicker {
 	 */
 	public setMinDate(date: Date | null): void {
 		this.options.minDate = date;
-		this.render();
+		this.render('day');
 	}
 
 	/**
@@ -355,7 +355,7 @@ class DatePicker {
 	 */
 	public setMaxDate(date: Date | null): void {
 		this.options.maxDate = date;
-		this.render();
+		this.render('day');
 	}
 
 	/**
@@ -374,7 +374,7 @@ class DatePicker {
 		return (new Date(this.options.date.getFullYear(), this.options.date.getMonth(), 1));
 	}
 
-	private render(view: PickerView = 'day'): void {
+	private render(view: PickerView): void {
 		this.calendar.innerHTML = '';
 
 		if (view === 'day') {
