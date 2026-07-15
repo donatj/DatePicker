@@ -102,7 +102,7 @@ declare class DatePicker {
     private renderDayView;
     private renderMonthView;
     private renderYearView;
-    /**
+    /*!
      * From: http://www.electricprism.com/aeron/calendar/
      *
      * License:

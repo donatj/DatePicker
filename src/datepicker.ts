@@ -620,7 +620,7 @@ class DatePicker {
 		}
 	}
 
-	/**
+	/*!
 	 * From: http://www.electricprism.com/aeron/calendar/
 	 *
 	 * License:
