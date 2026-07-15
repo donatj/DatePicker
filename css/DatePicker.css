@@ -15,7 +15,7 @@
 .DatePicker .DatePicker-next-month, .DatePicker .DatePicker-prev-month,
 .DatePicker .DatePicker-next-year, .DatePicker .DatePicker-prev-year,
 .DatePicker .DatePicker-next-years, .DatePicker .DatePicker-prev-years,
-.DatePicker .DatePicker-month, .DatePicker .DatePicker-year {
+.DatePicker .DatePicker-month-button, .DatePicker .DatePicker-year-button {
   background: transparent;
   border: 0;
   color: inherit;
@@ -88,7 +88,7 @@
   border-color: transparent;
   padding: 0;
 }
-.DatePicker .DatePicker-month, .DatePicker .DatePicker-year {
+.DatePicker .DatePicker-month-button, .DatePicker .DatePicker-year-button {
   border-color: transparent;
   display: block;
   text-align: center;
@@ -96,7 +96,7 @@
   padding: 8px;
   width: 100%;
 }
-.DatePicker .DatePicker-month:hover, .DatePicker .DatePicker-year:hover, .DatePicker .DatePicker-month:focus, .DatePicker .DatePicker-year:focus {
+.DatePicker .DatePicker-month-button:hover, .DatePicker .DatePicker-year-button:hover, .DatePicker .DatePicker-month-button:focus, .DatePicker .DatePicker-year-button:focus {
   background-color: orange;
   border-color: darkorange;
 }

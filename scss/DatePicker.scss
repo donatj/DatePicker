@@ -16,7 +16,7 @@
 	.DatePicker-next-month, .DatePicker-prev-month,
 	.DatePicker-next-year, .DatePicker-prev-year,
 	.DatePicker-next-years, .DatePicker-prev-years,
-	.DatePicker-month, .DatePicker-year {
+	.DatePicker-month-button, .DatePicker-year-button {
 		background: transparent;
 		border: 0;
 		color: inherit;
@@ -100,7 +100,7 @@
 		padding: 0;
 	}
 
-	.DatePicker-month, .DatePicker-year {
+	.DatePicker-month-button, .DatePicker-year-button {
 		border-color: transparent;
 		display: block;
 		text-align: center;

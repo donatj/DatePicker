@@ -185,8 +185,8 @@ class DatePicker {
 	public display() {
 		if (this.calendar.parentNode === null) {
 			this.currentView = 'day';
-			this.options.parentNode.appendChild(this.calendar);
 			this.render();
+			this.options.parentNode.appendChild(this.calendar);
 		}
 
 		this.updatePosition();
@@ -240,6 +240,14 @@ class DatePicker {
 		throw new Error("Days in Month Unknown!");
 	}
 
+	private getDateMonth(date: Date): number {
+		return this.options.pickerDateUTC ? date.getUTCMonth() : date.getMonth();
+	}
+
+	private getDateYear(date: Date): number {
+		return this.options.pickerDateUTC ? date.getUTCFullYear() : date.getFullYear();
+	}
+
 	/**
 	 * Set the currently picked date of the picker
 	 * 
@@ -264,8 +272,8 @@ class DatePicker {
 		this.pickerInput.value = date ? this.format(date, this.options.outputFormat, this.options.pickerDateUTC) : '';
 
 		if (date) {
-			this.updateMonth(this.options.pickerDateUTC ? date.getUTCMonth() : date.getMonth());
-			this.updateYear(this.options.pickerDateUTC ? date.getUTCFullYear() : date.getFullYear());
+			this.updateMonth(this.getDateMonth(date));
+			this.updateYear(this.getDateYear(date));
 		}
 
 		this.render();
@@ -532,7 +540,7 @@ class DatePicker {
 				? this.options.months(i, 'long')
 				: this.options.months[i];
 			
-			const button = this.createButton('DatePicker-month', monthName, () => {
+			const button = this.createButton('DatePicker-month-button', monthName, () => {
 				this.updateMonth(i);
 				this.currentView = 'day';
 				this.render();
@@ -583,7 +591,7 @@ class DatePicker {
 			td.className = 'DatePicker-year-cell';
 			const year = startYear + i;
 
-			const button = this.createButton('DatePicker-year', year.toString(), () => {
+			const button = this.createButton('DatePicker-year-button', year.toString(), () => {
 				this.updateYear(year);
 				this.currentView = 'month';
 				this.render();

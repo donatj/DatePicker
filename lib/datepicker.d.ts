@@ -51,6 +51,8 @@ declare class DatePicker {
     private scheduleHide;
     private updatePosition;
     private getDaysInMonth;
+    private getDateMonth;
+    private getDateYear;
     /**
      * Set the currently picked date of the picker
      *
