@@ -263,9 +263,11 @@ class DatePicker {
 		this.pickerInput.value = date ? this.format(date, this.options.outputFormat, this.options.pickerDateUTC) : '';
 
 		if (date) {
-			this.setMonth(this.options.pickerDateUTC ? date.getUTCMonth() : date.getMonth());
-			this.setYear(this.options.pickerDateUTC ? date.getUTCFullYear() : date.getFullYear());
+			this.updateMonth(this.options.pickerDateUTC ? date.getUTCMonth() : date.getMonth());
+			this.updateYear(this.options.pickerDateUTC ? date.getUTCFullYear() : date.getFullYear());
 		}
+
+		this.render();
 	}
 
 	/**
@@ -283,7 +285,7 @@ class DatePicker {
 	 * @param {!number} month
 	 */
 	public setMonth(month: number): void {
-		this.options.date.setMonth(month);
+		this.updateMonth(month);
 		this.render();
 	}
 
@@ -293,8 +295,16 @@ class DatePicker {
 	 * @param {!number} year
 	 */
 	public setYear(year: number): void {
-		this.options.date.setFullYear(year);
+		this.updateYear(year);
 		this.render();
+	}
+
+	private updateMonth(month: number): void {
+		this.options.date.setMonth(month);
+	}
+
+	private updateYear(year: number): void {
+		this.options.date.setFullYear(year);
 	}
 
 	/**
@@ -519,8 +529,9 @@ class DatePicker {
 				: this.options.months[i].substring(0, 3);
 			
 			const button = this.createButton('DatePicker-month', monthName, () => {
+				this.updateMonth(i);
 				this.currentView = 'day';
-				this.setMonth(i);
+				this.render();
 				this.pickerInput.focus();
 			}, `Choose ${this.format(new Date(workingDate.getFullYear(), i, 1), 'F', false)}`);
 
@@ -569,8 +580,9 @@ class DatePicker {
 			const year = startYear + i;
 
 			const button = this.createButton('DatePicker-year', year.toString(), () => {
+				this.updateYear(year);
 				this.currentView = 'month';
-				this.setYear(year);
+				this.render();
 				this.pickerInput.focus();
 			}, `Choose ${year}`);
 

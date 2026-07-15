@@ -74,6 +74,8 @@ declare class DatePicker {
      * @param {!number} year
      */
     setYear(year: number): void;
+    private updateMonth;
+    private updateYear;
     /**
      * @param {?Date} date
      */
