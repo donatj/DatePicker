@@ -32,11 +32,13 @@ interface Rect {
     height(): number;
 }
 type PickerView = 'day' | 'month' | 'year';
+declare function createButton(className: string, text: string, onClick: () => void, ariaLabel?: string): HTMLButtonElement;
+declare function getDaysInMonth(date: Date): number;
+declare function pageRect(elm: HTMLElement): Rect;
 declare class DatePicker {
     protected pickerInput: HTMLInputElement;
     offset: number;
     protected calendar: HTMLDivElement;
-    protected currentView: PickerView;
     protected hideTimeout: number;
     protected options: OptionsInterface;
     /**
@@ -50,7 +52,6 @@ declare class DatePicker {
     display(): void;
     private scheduleHide;
     private updatePosition;
-    private getDaysInMonth;
     private getDateMonth;
     private getDateYear;
     /**
@@ -98,11 +99,9 @@ declare class DatePicker {
      */
     getWorkingDate(): Date;
     private render;
-    private createButton;
     private renderDayView;
     private renderMonthView;
     private renderYearView;
-    private pageRect;
     /**
      * From: http://www.electricprism.com/aeron/calendar/
      *
