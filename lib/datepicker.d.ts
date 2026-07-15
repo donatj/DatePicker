@@ -1,10 +1,10 @@
 declare var module: {
     exports: any;
 };
-declare type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
-declare type DayPickerCallback = (day: number, format: "long" | "short") => string;
-declare type MonthPickerCallback = (month: number, format: "long" | "short") => string;
-declare type UserInputParserCallback = (input: string) => Date | null;
+type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
+type DayPickerCallback = (day: number, format: "long" | "short") => string;
+type MonthPickerCallback = (month: number, format: "long" | "short") => string;
+type UserInputParserCallback = (input: string) => Date | null;
 interface OptionsInterface {
     outputFormat: string;
     days: string[] | DayPickerCallback;
@@ -34,6 +34,7 @@ declare class DatePicker {
     protected pickerInput: HTMLInputElement;
     offset: number;
     protected calendar: HTMLDivElement;
+    protected mutationObserver: MutationObserver | null;
     protected options: OptionsInterface;
     /**
      * @param {!Node} pickerInput
