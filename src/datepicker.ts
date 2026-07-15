@@ -59,7 +59,7 @@ function createButton(className: string, text: string, onClick: () => void, aria
 function getDaysInMonth(date: Date): number {
 	for (let i = 27; i <= 32; i++) {
 		const workingDate = new Date(date.getFullYear(), date.getMonth(), i);
-		if (workingDate.getMonth() != date.getMonth()) {
+		if (workingDate.getMonth() !== date.getMonth()) {
 			return i - 1;
 		}
 	}
@@ -71,11 +71,11 @@ function pageRect(elm: HTMLElement): Rect {
 	const irect = elm.getBoundingClientRect();
 
 	return new class {
-		public bottom = (irect.y - (irect.top - irect.bottom)) + window.scrollY;
+		public bottom = irect.bottom + window.scrollY;
 		public top =  irect.y + window.scrollY;
 
 		public left = irect.x - window.scrollX;
-		public right = (irect.x - (irect.left - irect.right)) - window.scrollX;
+		public right = irect.right - window.scrollX;
 
 		public height() : number {
 			return this.bottom - this.top;
