@@ -45,7 +45,6 @@ declare class DatePicker {
     protected pickerInput: HTMLInputElement;
     offset: number;
     protected calendar: HTMLDivElement;
-    protected hideTimeout: number;
     protected options: OptionsInterface;
     /**
      * @param {!Node} pickerInput
@@ -56,7 +55,6 @@ declare class DatePicker {
     protected parseUserDate(input: string): Date | null;
     hide(): void;
     display(): void;
-    private scheduleHide;
     private updatePosition;
     private getDateMonth;
     private getDateYear;
@@ -84,8 +82,7 @@ declare class DatePicker {
      * @param {!number} year
      */
     setYear(year: number): void;
-    private updateMonth;
-    private updateYear;
+    private updateCalendar;
     /**
      * @param {?Date} date
      */

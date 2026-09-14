@@ -93,7 +93,6 @@ class DatePicker {
 	public offset: number = 0;
 
 	protected calendar = document.createElement('div');
-	protected hideTimeout = 0;
 
 	protected options: OptionsInterface = {
 		outputFormat: 'Y-m-d',
@@ -141,21 +140,33 @@ class DatePicker {
 			throw new Error("Failed to find parent node");
 		}
 
+		let hideTimeout = 0;
+		const cancelHide = () => clearTimeout(hideTimeout);
+		const scheduleHide = () => {
+			cancelHide();
+			hideTimeout = window.setTimeout(() => {
+				const activeElement = document.activeElement;
+				if (activeElement !== this.pickerInput && (activeElement === null || !this.calendar.contains(activeElement))) {
+					this.hide();
+				}
+			}, HIDE_DELAY_MS);
+		};
+
 		this.pickerInput.addEventListener('focus', () => {
-			clearTimeout(this.hideTimeout);
+			cancelHide();
 			this.display();
 		});
 
 		this.pickerInput.addEventListener('blur', () => {
-			this.scheduleHide();
+			scheduleHide();
 		});
 
 		this.calendar.addEventListener('focusin', () => {
-			clearTimeout(this.hideTimeout);
+			cancelHide();
 		});
 
 		this.calendar.addEventListener('focusout', () => {
-			this.scheduleHide();
+			scheduleHide();
 		});
 
 		let scrollTimeout = 0;
@@ -234,16 +245,6 @@ class DatePicker {
 		this.updatePosition();
 	}
 
-	private scheduleHide(): void {
-		clearTimeout(this.hideTimeout);
-		this.hideTimeout = window.setTimeout(() => {
-			const activeElement = document.activeElement;
-			if (activeElement !== this.pickerInput && (activeElement === null || !this.calendar.contains(activeElement))) {
-				this.hide();
-			}
-		}, HIDE_DELAY_MS);
-	}
-
 	private updatePosition() {
 		if (this.calendar.parentNode === null) {
 			return;
@@ -303,8 +304,8 @@ class DatePicker {
 		this.pickerInput.value = date ? this.format(date, this.options.outputFormat, this.options.pickerDateUTC) : '';
 
 		if (date) {
-			this.updateMonth(this.getDateMonth(date));
-			this.updateYear(this.getDateYear(date));
+			this.options.date.setMonth(this.getDateMonth(date));
+			this.options.date.setFullYear(this.getDateYear(date));
 		}
 
 		this.render('day');
@@ -325,8 +326,7 @@ class DatePicker {
 	 * @param {!number} month
 	 */
 	public setMonth(month: number): void {
-		this.updateMonth(month);
-		this.render('day');
+		this.updateCalendar('day', () => this.options.date.setMonth(month));
 	}
 
 	/**
@@ -335,16 +335,12 @@ class DatePicker {
 	 * @param {!number} year
 	 */
 	public setYear(year: number): void {
-		this.updateYear(year);
-		this.render('day');
+		this.updateCalendar('day', () => this.options.date.setFullYear(year));
 	}
 
-	private updateMonth(month: number): void {
-		this.options.date.setMonth(month);
-	}
-
-	private updateYear(year: number): void {
-		this.options.date.setFullYear(year);
+	private updateCalendar(view: PickerView, update: () => void): void {
+		update();
+		this.render(view);
 	}
 
 	/**
@@ -424,14 +420,12 @@ class DatePicker {
 		this.calendar.appendChild(header);
 
 		const next = createButton('DatePicker-next-month', this.options.next, () => {
-			this.updateMonth(this.options.date.getMonth() + 1);
-			this.render('day');
+			this.setMonth(this.options.date.getMonth() + 1);
 			this.pickerInput.focus();
 		}, 'Next month');
 
 		const prev = createButton('DatePicker-prev-month', this.options.prev, () => {
-			this.updateMonth(this.options.date.getMonth() - 1);
-			this.render('day');
+			this.setMonth(this.options.date.getMonth() - 1);
 			this.pickerInput.focus();
 		}, 'Previous month');
 
@@ -527,14 +521,12 @@ class DatePicker {
 		this.calendar.appendChild(header);
 
 		const next = createButton('DatePicker-next-year', this.options.next, () => {
-			this.updateYear(this.options.date.getFullYear() + 1);
-			this.render('month');
+			this.updateCalendar('month', () => this.options.date.setFullYear(this.options.date.getFullYear() + 1));
 			this.pickerInput.focus();
 		}, 'Next year');
 
 		const prev = createButton('DatePicker-prev-year', this.options.prev, () => {
-			this.updateYear(this.options.date.getFullYear() - 1);
-			this.render('month');
+			this.updateCalendar('month', () => this.options.date.setFullYear(this.options.date.getFullYear() - 1));
 			this.pickerInput.focus();
 		}, 'Previous year');
 
@@ -561,8 +553,7 @@ class DatePicker {
 				: this.options.months[i];
 
 			const button = createButton('DatePicker-month-button', monthName, () => {
-				this.updateMonth(i);
-				this.render('day');
+				this.setMonth(i);
 				this.pickerInput.focus();
 			}, `Choose ${monthLabel}`);
 
@@ -585,14 +576,12 @@ class DatePicker {
 		this.calendar.appendChild(header);
 
 		const next = createButton('DatePicker-next-years', this.options.next, () => {
-			this.updateYear(this.options.date.getFullYear() + 12);
-			this.render('year');
+			this.updateCalendar('year', () => this.options.date.setFullYear(this.options.date.getFullYear() + 12));
 			this.pickerInput.focus();
 		}, 'Next 12 years');
 
 		const prev = createButton('DatePicker-prev-years', this.options.prev, () => {
-			this.updateYear(this.options.date.getFullYear() - 12);
-			this.render('year');
+			this.updateCalendar('year', () => this.options.date.setFullYear(this.options.date.getFullYear() - 12));
 			this.pickerInput.focus();
 		}, 'Previous 12 years');
 
@@ -613,8 +602,7 @@ class DatePicker {
 			const year = startYear + i;
 
 			const button = createButton('DatePicker-year-button', year.toString(), () => {
-				this.updateYear(year);
-				this.render('month');
+				this.updateCalendar('month', () => this.options.date.setFullYear(year));
 				this.pickerInput.focus();
 			}, `Choose ${year}`);
 
