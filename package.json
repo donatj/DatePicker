@@ -5,7 +5,7 @@
   "version": "0.9.1",
   "types": "./lib/datepicker.d.ts",
   "scripts": {
-    "test": "node test/build.cjs && tsc --ignoreConfig --noEmit --strict --target es2018 --module esnext --moduleResolution bundler test/types-module.ts",
+    "test": "mocha test/build.cjs && tsc --ignoreConfig --noEmit --strict --target es2018 --module esnext --moduleResolution bundler test/types-module.ts",
     "build": "tsc --emitDeclarationOnly false --outDir .build && rollup -c"
   },
   "repository": {
@@ -28,6 +28,7 @@
   "homepage": "https://github.com/donatj/DatePicker#readme",
   "devDependencies": {
     "@rollup/plugin-terser": "^1.0.2",
+    "mocha": "^12.0.3",
     "rollup": "^4.67.4",
     "typescript": "^7.0.2"
   },
