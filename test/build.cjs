@@ -1,7 +1,6 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
-const acorn = require('acorn');
 
 function element() {
   return {
@@ -27,7 +26,6 @@ function context() {
 
 for (const file of ['lib/datepicker.js', 'lib/datepicker.min.js']) {
   const source = fs.readFileSync(file, 'utf8');
-  acorn.parse(source, { ecmaVersion: 2018 });
   const browser = vm.createContext(context());
   browser.window = browser;
   vm.runInContext(source, browser);
