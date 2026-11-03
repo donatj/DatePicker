@@ -4,7 +4,7 @@ Simple No Framework JavaScript Date Picker
 
 Requires **no external libraries**. It is **require-able** with RequireJS but RequireJS is by no means *required*.
 
-Works in all modern browsers including IE9+.
+Requires a browser that supports ECMAScript 2017.
 
 ## Examples
 

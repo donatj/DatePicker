@@ -5,8 +5,8 @@
   "version": "0.9.1",
   "types": "./lib/datepicker.d.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha test",
-    "build": "node_modules/.bin/tsc"
+    "test": "node test/build.cjs",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
   "homepage": "https://github.com/donatj/DatePicker#readme",
   "devDependencies": {
     "@types/requirejs": "^2.1.29",
+    "acorn": "^8.19.0",
     "mocha": "^12.0.2",
     "tslint": "^6.1.0",
     "typescript": "^7.0.2"

@@ -543,6 +543,10 @@ class DatePicker {
 	}
 }
 
+if (typeof window !== "undefined") {
+	(window as Window & { DatePicker?: typeof DatePicker }).DatePicker = DatePicker;
+}
+
 if (typeof module !== "undefined" && module.exports) {
 	module.exports = DatePicker;
 }
