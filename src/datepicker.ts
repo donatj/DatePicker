@@ -1,7 +1,5 @@
 "use strict";
 
-declare var module: { exports: any };
-
 type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
 type DayPickerCallback = (day: number, format: "long" | "short") => string;
 type MonthPickerCallback = (month: number, format: "long" | "short") => string;
@@ -543,16 +541,4 @@ class DatePicker {
 	}
 }
 
-if (typeof window !== "undefined") {
-	(window as Window & { DatePicker?: typeof DatePicker }).DatePicker = DatePicker;
-}
-
-if (typeof module !== "undefined" && module.exports) {
-	module.exports = DatePicker;
-}
-
-if (typeof define === "function") {
-	define([], () => {
-		return DatePicker;
-	});
-}
+export default DatePicker;

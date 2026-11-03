@@ -1,6 +1,3 @@
-declare var module: {
-    exports: any;
-};
 type OnPickCallback = (this: HTMLInputElement, picked: Date) => void;
 type DayPickerCallback = (day: number, format: "long" | "short") => string;
 type MonthPickerCallback = (month: number, format: "long" | "short") => string;
@@ -22,13 +19,6 @@ interface OptionsInterface {
     offsetX: number;
     offsetY: number;
     parentNode: HTMLElement;
-}
-interface Rect {
-    bottom: number;
-    top: number;
-    left: number;
-    right: number;
-    height(): number;
 }
 declare class DatePicker {
     protected pickerInput: HTMLInputElement;
@@ -105,3 +95,4 @@ declare class DatePicker {
      */
     private format;
 }
+export default DatePicker;

@@ -1,12 +1,12 @@
 {
   "name": "basic-datepicker",
   "description": "Simple No Framework No Nonsense JavaScript Date Picker",
-  "main": "./lib/datepicker.js",
+  "main": "./lib/datepicker.mjs",
   "version": "0.9.1",
-  "types": "./lib/datepicker.d.js",
+  "types": "./lib/datepicker.d.ts",
   "scripts": {
-    "test": "node test/build.cjs",
-    "build": "tsc"
+    "test": "node test/build.cjs && tsc --ignoreConfig --noEmit --strict --target es2018 --module esnext --moduleResolution bundler test/types-module.ts",
+    "build": "tsc --emitDeclarationOnly false --outDir .build && rollup -c"
   },
   "repository": {
     "type": "git",
@@ -27,10 +27,21 @@
   },
   "homepage": "https://github.com/donatj/DatePicker#readme",
   "devDependencies": {
-    "@types/requirejs": "^2.1.29",
+    "@rollup/plugin-terser": "^1.0.2",
     "acorn": "^8.19.0",
     "mocha": "^12.0.2",
+    "rollup": "^4.67.4",
     "tslint": "^6.1.0",
     "typescript": "^7.0.2"
+  },
+  "type": "module",
+  "module": "./lib/datepicker.mjs",
+  "unpkg": "./lib/datepicker.min.js",
+  "exports": {
+    ".": {
+      "types": "./lib/datepicker.d.ts",
+      "import": "./lib/datepicker.mjs"
+    },
+    "./css/DatePicker.css": "./css/DatePicker.css"
   }
 }

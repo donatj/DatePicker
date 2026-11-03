@@ -2,9 +2,21 @@
 
 Simple No Framework JavaScript Date Picker
 
-Requires **no external libraries**. It is **require-able** with RequireJS but RequireJS is by no means *required*.
+Requires **no external libraries**. Use it as a browser script or an ES module.
 
-Requires a browser that supports ECMAScript 2017.
+Requires a browser that supports ECMAScript 2018.
+
+## Usage
+
+Load `lib/datepicker.js` or `lib/datepicker.min.js` in a browser. The script exposes `DatePicker` as a global. Include `css/DatePicker.css` for the default styles.
+
+For an ES module, import the default export:
+
+```js
+import DatePicker from 'basic-datepicker';
+
+new DatePicker(document.querySelector('input'));
+```
 
 ## Examples
 
